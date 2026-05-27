@@ -1,206 +1,306 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { AnimatedText } from './animated-text';
-import { ScrollIndicator } from './scroll-indicator';
-import { CustomButton } from '@/components/ui/custom-button';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
 import { Modal } from '@/components/ui/modal';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle, Users, Globe2, Clock, Shield, Truck, Zap, BarChart3, Play, CalendarCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '@/lib/api';
 
+const carouselSlides = [
+  {
+    bg: 'from-[#2C3E50] to-[#17A2B8]',
+    image: '/placeholder.jpg',
+    label: 'Composite Materials',
+    caption: 'Carbon fiber, glass fiber & Kevlar composites for aerospace and automotive.',
+  },
+  {
+    bg: 'from-[#17A2B8] to-[#0D7A8C]',
+    image: '/placeholder.jpg',
+    label: 'Advanced Alloys',
+    caption: 'Titanium, nickel-based & aluminum alloys engineered for extreme conditions.',
+  },
+  {
+    bg: 'from-[#0D7A8C] to-[#2C3E50]',
+    image: '/placeholder.jpg',
+    label: 'Protective Coatings',
+    caption: 'Anti-corrosion, thermal barrier & wear-resistant industrial coatings.',
+  },
+  {
+    bg: 'from-[#2C3E50] to-[#138899]',
+    image: '/placeholder.jpg',
+    label: 'Specialty Polymers',
+    caption: 'High-performance polymers & sustainable materials for industrial use.',
+  },
+];
+
 export function HeroSection() {
-  const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
-  const [quoteEmail, setQuoteEmail] = useState('');
-  const [quoteStatus, setQuoteStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [isDemoOpen,  setIsDemoOpen]  = useState(false);
+  const [current,     setCurrent]     = useState(0);
+
+  const [quoteName,     setQuoteName]     = useState('');
+  const [quoteCompany,  setQuoteCompany]  = useState('');
+  const [quoteEmail,    setQuoteEmail]    = useState('');
+  const [quoteMaterial, setQuoteMaterial] = useState('');
+  const [quoteStatus,   setQuoteStatus]   = useState<'idle'|'loading'|'success'|'error'>('idle');
+
+  const total = carouselSlides.length;
+  const next  = useCallback(() => setCurrent((c) => (c + 1) % total), [total]);
+  const prev  = () => setCurrent((c) => (c - 1 + total) % total);
+
+  useEffect(() => {
+    const timer = setInterval(next, 4000);
+    return () => clearInterval(timer);
+  }, [next]);
+
+  const scrollToSolutions = () => {
+    document.getElementById('solutions')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleQuoteSubmit = async () => {
     if (!quoteEmail) return;
     setQuoteStatus('loading');
     try {
-      await api.quotes.create({ email: quoteEmail, material: 'General inquiry' });
+      await api.quotes.create({ email: quoteEmail, material: quoteMaterial || 'General inquiry' });
       setQuoteStatus('success');
-      setQuoteEmail('');
+      setQuoteName(''); setQuoteCompany(''); setQuoteEmail(''); setQuoteMaterial('');
     } catch {
       setQuoteStatus('error');
     }
   };
+
+  const achievements = [
+    { icon: CalendarCheck, value: '20+',  label: 'Years Experience' },
+    { icon: Users,         value: '500+', label: 'Clients Worldwide' },
+    { icon: Globe2,        value: '15+',  label: 'Countries Served'  },
+  ];
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
-      </div>
+    <section className="relative pt-36 pb-24 bg-white overflow-hidden">
+      {/* Dot pattern */}
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #17A2B8 1px, transparent 0)', backgroundSize: '36px 36px' }}
+      />
+      {/* Teal glow */}
+      <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-[#D1F2F7] opacity-40 blur-3xl pointer-events-none" />
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20">
-        {/* Top badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex justify-center mb-8"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-200">
-            <span className="w-2 h-2 rounded-full bg-teal-600" />
-            <span className="text-sm font-medium text-teal-700">
-              Precision Materials. Delivered at Scale.
-            </span>
-          </div>
-        </motion.div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
 
-        {/* Main heading */}
-        <motion.div className="mb-8">
-          <AnimatedText
-            text="The Supply Chain Behind Industry's Toughest Builds"
-            stagger={0.03}
-            delay={0.1}
-            highlightWords={['Supply', 'Chain', 'Industry']}
-            className="text-5xl sm:text-6xl md:text-7xl font-bold text-center text-gray-900 leading-tight"
-          />
-        </motion.div>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mx-auto max-w-2xl text-center text-lg sm:text-xl text-gray-600 mb-12"
-        >
-          VALTRIX connects heavy manufacturers with a verified network of metals, polymers, composites, and specialty coatings — sourced precisely, delivered reliably, and spec-matched to your production demands.
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
-        >
-          <CustomButton 
-            variant="primary" 
-            size="lg"
-            onClick={() => setIsTrialModalOpen(true)}
-          >
-            Request a Quote
-            <ArrowRight size={20} />
-          </CustomButton>
-          <CustomButton 
-            variant="outline" 
-            size="lg"
-            onClick={() => setIsDemoModalOpen(true)}
-          >
-            See How It Works
-          </CustomButton>
-        </motion.div>
-
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto mb-16"
-        >
-          {[
-            { label: 'Verified Suppliers', value: '320+' },
-            { label: 'SKUs In-Network', value: '18,000+' },
-            { label: 'On-Time Delivery', value: '97.4%' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-teal-600 mb-1">
-                {stat.value}
-              </p>
-              <p className="text-xs sm:text-sm text-gray-600">{stat.label}</p>
+          {/* ── Left: Content ── */}
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#D1F2F7] shadow-sm mb-6">
+              <span className="w-2 h-2 rounded-full bg-[#17A2B8] animate-pulse" />
+              <span className="text-sm font-medium text-[#2C3E50]">Leading Advanced Materials Manufacturer</span>
             </div>
-          ))}
-        </motion.div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          <ScrollIndicator />
-        </motion.div>
-      </div>
+            <h1 className="text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#2C3E50] leading-tight mb-6">
+              Advanced Materials for{' '}
+              <span className="gradient-text block mt-1">Tomorrow's Industries</span>
+            </h1>
 
-      {/* Free Trial Modal */}
-      <Modal
-        isOpen={isTrialModalOpen}
-        onClose={() => setIsTrialModalOpen(false)}
-        title="Request a Quote"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            Hundreds of manufacturers trust VALTRIX to keep their lines running. Tell us what you need — we'll match you with the right material and the right source, fast.
-          </p>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-teal-600" />
-              <span>No minimum order commitment</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-teal-600" />
-              <span>Spec sheet verification included</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-teal-600" />
-              <span>Dedicated account support from day one</span>
-            </div>
-          </div>
-          <input
-            type="email"
-            placeholder="your@email.com"
-            value={quoteEmail}
-            onChange={(e) => setQuoteEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
-          {quoteStatus === 'success' ? (
-            <p className="text-center text-sm text-teal-600 font-medium">
-              ✓ Request received — a specialist will follow up shortly.
+            <p className="text-lg text-[#6B7280] mb-8 leading-relaxed max-w-xl">
+              VAM VALTRIX delivers cutting-edge material solutions — metals, polymers, composites, and specialty coatings — engineered for performance, durability, and innovation across diverse industrial applications.
             </p>
-          ) : (
-            <CustomButton
-              variant="primary"
-              className="w-full"
-              onClick={handleQuoteSubmit}
-              disabled={quoteStatus === 'loading'}
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <button
+                onClick={() => setIsQuoteOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-all duration-200 shadow-sm group"
+              >
+                Request a Quote
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button
+                onClick={() => setIsDemoOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border-2 border-[#17A2B8] text-[#17A2B8] font-semibold hover:bg-[#17A2B8] hover:text-white transition-all duration-200"
+              >
+                See How It Works
+              </button>
+            </div>
+
+            {/* Achievements */}
+            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100">
+              {achievements.map(({ icon: Icon, value, label }) => (
+                <div key={label} className="text-center lg:text-left">
+                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#E6F7FA] mb-2">
+                    <Icon className="w-5 h-5 text-[#17A2B8]" />
+                  </div>
+                  <div className="text-2xl font-bold text-[#2C3E50]">{value}</div>
+                  <div className="text-sm text-[#6B7280]">{label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* ── Right: Image Carousel ── */}
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
+
+            <div
+              className="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer h-[460px] select-none"
+              onClick={scrollToSolutions}
+              title="Click to explore our solutions"
             >
-              {quoteStatus === 'loading' ? 'Submitting...' : 'Submit Request'}
-            </CustomButton>
-          )}
-          {quoteStatus === 'error' && (
-            <p className="text-center text-sm text-red-600">Something went wrong. Please try again.</p>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current}
+                  initial={{ opacity: 0, x: 60 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -60 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  className={`absolute inset-0 bg-gradient-to-br ${carouselSlides[current].bg}`}
+                >
+                  <img
+                    src={carouselSlides[current].image}
+                    alt={carouselSlides[current].label}
+                    className="w-full h-full object-cover mix-blend-overlay opacity-50"
+                  />
+                  {/* Slide content */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-8">
+                    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-[#D1F2F7] mb-1">Our Services</p>
+                      <h3 className="text-2xl font-bold text-white mb-2">{carouselSlides[current].label}</h3>
+                      <p className="text-sm text-white/75">{carouselSlides[current].caption}</p>
+                      <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#D1F2F7]">
+                        <span>Click to explore all solutions</span>
+                        <ArrowRight size={13} />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Prev / Next */}
+              <button
+                onClick={(e) => { e.stopPropagation(); prev(); }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all z-10"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); next(); }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all z-10"
+              >
+                <ChevronRight size={18} />
+              </button>
+
+              {/* Dot indicators */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {carouselSlides.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Floating accent */}
+            <motion.div
+              animate={{ y: [0, -16, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="absolute -top-5 -right-5 w-24 h-24 rounded-full bg-[#17A2B8] opacity-10 blur-2xl pointer-events-none"
+            />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ── Quote Modal ── */}
+      <Modal isOpen={isQuoteOpen} onClose={() => setIsQuoteOpen(false)} title="Get Started with VAM VALTRIX">
+        <div className="space-y-5">
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { icon: Clock,  label: '24hr Response',   sub: 'Quote turnaround'  },
+              { icon: Shield, label: 'Verified Sources', sub: '320+ suppliers'   },
+              { icon: Truck,  label: 'On-Time',          sub: '97.4% delivery'   },
+            ].map(({ icon: Icon, label, sub }) => (
+              <div key={label} className="text-center p-3 bg-[#E6F7FA] rounded-xl border border-[#D1F2F7]">
+                <Icon className="w-5 h-5 text-[#17A2B8] mx-auto mb-1" />
+                <p className="text-xs font-semibold text-[#2C3E50]">{label}</p>
+                <p className="text-xs text-[#6B7280]">{sub}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-2">
+            {['No minimum order commitment', 'Spec sheet & cert verification included', 'Dedicated sourcing specialist assigned', 'Real-time order tracking from day one'].map((item) => (
+              <div key={item} className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-[#17A2B8] shrink-0" />
+                <span className="text-sm text-[#1A1A1A]">{item}</span>
+              </div>
+            ))}
+          </div>
+
+          {quoteStatus === 'success' ? (
+            <div className="text-center py-5 bg-[#E6F7FA] rounded-xl border border-[#D1F2F7]">
+              <CheckCircle className="w-10 h-10 text-[#17A2B8] mx-auto mb-2" />
+              <p className="font-semibold text-[#2C3E50]">Request Received!</p>
+              <p className="text-sm text-[#6B7280] mt-1">A specialist will follow up within 24 hours.</p>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <input type="text" placeholder="Your name" value={quoteName} onChange={(e) => setQuoteName(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                  <input type="text" placeholder="Company" value={quoteCompany} onChange={(e) => setQuoteCompany(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                </div>
+                <input type="email" placeholder="Work email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                <input type="text" placeholder="Material needed (e.g. Titanium Grade 5, HDPE sheet...)" value={quoteMaterial} onChange={(e) => setQuoteMaterial(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+              </div>
+              <button onClick={handleQuoteSubmit} disabled={quoteStatus === 'loading'}
+                className="w-full py-3 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors disabled:opacity-60">
+                {quoteStatus === 'loading' ? 'Submitting...' : 'Get My Quote →'}
+              </button>
+              {quoteStatus === 'error' && <p className="text-center text-xs text-red-600">Something went wrong. Please try again.</p>}
+            </>
           )}
         </div>
       </Modal>
 
-      {/* Demo Modal */}
-      <Modal
-        isOpen={isDemoModalOpen}
-        onClose={() => setIsDemoModalOpen(false)}
-        title="Watch Our Demo"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            Watch how VALTRIX's sourcing engine cuts procurement cycles from weeks to days, without sacrificing traceability or spec compliance.
+      {/* ── Demo Modal ── */}
+      <Modal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} title="See How VAM VALTRIX Works">
+        <div className="space-y-5">
+          <p className="text-sm text-[#6B7280]">
+            See how VAM VALTRIX cuts procurement cycles from weeks to days — without sacrificing traceability or spec compliance.
           </p>
-          <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+          <div className="aspect-video bg-gradient-to-br from-[#2C3E50] to-[#17A2B8] rounded-xl flex items-center justify-center">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-teal-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl">▶</span>
-              </div>
-              <p className="text-gray-600">Click to play demo video</p>
+              <button className="w-16 h-16 mx-auto mb-3 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                <Play className="w-6 h-6 text-[#17A2B8] ml-1" />
+              </button>
+              <p className="text-white/80 text-sm">3-minute product walkthrough</p>
             </div>
           </div>
-          <CustomButton variant="primary" className="w-full">
-            Schedule a Live Demo
-          </CustomButton>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">How it works</p>
+            {[
+              { icon: Zap,       step: '01', title: 'Submit your spec',   desc: 'Upload your material requirements or describe what you need.' },
+              { icon: Shield,    step: '02', title: 'We match & verify',  desc: 'Our engine finds the best-fit supplier from 320+ verified sources.' },
+              { icon: BarChart3, step: '03', title: 'Track in real time', desc: 'Monitor your order from confirmation to delivery on your dashboard.' },
+              { icon: Users,     step: '04', title: 'Dedicated support',  desc: 'A sourcing specialist is assigned to every account.' },
+            ].map(({ icon: Icon, step, title, desc }) => (
+              <div key={step} className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#F8FAFB] transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-[#E6F7FA] border border-[#D1F2F7] flex items-center justify-center shrink-0">
+                  <Icon className="w-4 h-4 text-[#17A2B8]" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#2C3E50]">{title}</p>
+                  <p className="text-xs text-[#6B7280]">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => { setIsDemoOpen(false); setIsQuoteOpen(true); }}
+            className="w-full py-3 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors">
+            Get Started Now →
+          </button>
         </div>
       </Modal>
     </section>

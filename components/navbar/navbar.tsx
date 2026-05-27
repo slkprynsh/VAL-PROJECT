@@ -1,93 +1,106 @@
 'use client';
 
-import { useScrollDirection } from '@/hooks/useScrollDirection';
-import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { useEffect, useState } from 'react';
-import { CustomButton } from '@/components/ui/custom-button';
-import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { Menu, X, Phone, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useScrollProgress } from '@/hooks/useScrollProgress';
 
 const navItems = [
-  { label: 'About', href: '/about' },
-  { label: 'Solutions', href: '/solutions' },
+  { label: 'About',      href: '/about' },
+  { label: 'Solutions',  href: '/solutions' },
   { label: 'Industries', href: '/industries' },
-  { label: 'Impact', href: '/impact' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Careers', href: '/careers' },
+  { label: 'Impact',     href: '/impact' },
+  { label: 'Contact',    href: '/contact' },
 ];
 
 export function Navbar() {
-  const scrollDirection = useScrollDirection();
-  const scrollProgress = useScrollProgress();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled]         = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const scrollProgress                       = useScrollProgress();
+  const pathname                             = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <>
-      <nav
-        className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-          scrollDirection === 'down' && scrollProgress > 5
-            ? 'translate-y-0'
-            : 'translate-y-0',
-          isScrolled
-            ? 'bg-white/80 backdrop-blur-md shadow-md'
-            : 'bg-transparent',
-        )}
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        isScrolled ? 'bg-white shadow-lg' : 'bg-white shadow-sm',
+      )}>
+        {/* Top bar */}
+        <div className="bg-[#2C3E50] text-white py-2">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm">
+            <div className="flex items-center gap-6">
+              <a href="tel:+91" className="flex items-center gap-1.5 hover:text-[#D1F2F7] transition-colors">
+                <Phone size={13} />
+                <span>+91 XXX XXX XXXX</span>
+              </a>
+              <a href="mailto:info@vamvaltrix.com" className="hidden md:flex items-center gap-1.5 hover:text-[#D1F2F7] transition-colors">
+                <Mail size={13} />
+                <span>info@vamvaltrix.com</span>
+              </a>
+            </div>
+            <span className="text-xs text-gray-300">ISO Certified &nbsp;|&nbsp; Advance Material Pvt. Ltd</span>
+          </div>
+        </div>
+
+        {/* Main bar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
+
             {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center gap-2"
-            >
+            <Link href="/" className="flex items-center shrink-0">
               <Image
                 src="/valtrix-logo.png"
-                alt="VALTRIX"
-                width={132}
-                height={44}
-                className="h-11 w-auto"
+                alt="VAM VALTRIX"
+                width={140}
+                height={48}
+                className="h-12 w-auto"
+                priority
               />
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-sm font-medium text-gray-700 hover:text-teal-600 transition-colors"
-                >
-                  {item.label}
-                </Link>
-              ))}
+            {/* Desktop nav — pill style with active state */}
+            <div className="hidden md:flex items-center bg-[#F8FAFB] border border-gray-200 rounded-xl px-2 py-1.5 gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200',
+                      isActive
+                        ? 'bg-[#17A2B8] text-white shadow-sm'
+                        : 'text-[#2C3E50] hover:bg-[#E6F7FA] hover:text-[#17A2B8]',
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
 
-            {/* CTA Buttons */}
-            <div className="hidden md:flex items-center gap-4">
-              <CustomButton variant="ghost" size="sm">
-                Sign In
-              </CustomButton>
-              <CustomButton variant="primary" size="sm">
-                Get Started
-              </CustomButton>
+            {/* CTA button */}
+            <div className="hidden md:flex items-center gap-3 shrink-0">
+              <Link
+                href="/contact"
+                className="px-5 py-2.5 text-sm font-semibold rounded-lg bg-[#17A2B8] text-white hover:bg-[#0D7A8C] transition-all duration-200 shadow-sm"
+              >
+                Get a Quote
+              </Link>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile toggle */}
             <button
-              className="md:hidden p-2"
+              className="md:hidden p-2 text-[#1A1A1A]"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -95,34 +108,40 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* Scroll progress bar */}
         <div
-          className="h-1 bg-gradient-to-r from-teal-600 to-cyan-500 transition-all duration-300"
+          className="h-0.5 bg-[#17A2B8] transition-all duration-150"
           style={{ width: `${scrollProgress}%` }}
         />
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="fixed top-20 left-0 right-0 z-30 bg-white border-b border-gray-100 md:hidden">
-          <div className="px-4 py-4 space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-2 text-gray-700 hover:bg-teal-50 rounded-lg"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
+        <div className="fixed top-[calc(2.5rem+5rem)] left-0 right-0 z-40 bg-white border-b border-gray-100 md:hidden shadow-lg">
+          <div className="px-4 py-4 space-y-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm',
+                    isActive
+                      ? 'bg-[#17A2B8] text-white'
+                      : 'text-[#2C3E50] hover:bg-[#E6F7FA] hover:text-[#17A2B8]',
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
+                  {item.label}
+                </Link>
+              );
+            })}
+            <div className="pt-3 border-t border-gray-100">
+              <Link href="/contact" className="block text-center px-4 py-2.5 text-sm font-semibold rounded-lg bg-[#17A2B8] text-white">
+                Get a Quote
               </Link>
-            ))}
-            <div className="flex gap-2 pt-4 border-t border-gray-100">
-              <CustomButton variant="ghost" size="sm" className="flex-1">
-                Sign In
-              </CustomButton>
-              <CustomButton variant="primary" size="sm" className="flex-1">
-                Get Started
-              </CustomButton>
             </div>
           </div>
         </div>

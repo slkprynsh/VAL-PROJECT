@@ -1,140 +1,252 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Section, SectionTitle } from '@/components/ui/section';
-import { CustomButton } from '@/components/ui/custom-button';
 import { Reveal } from '@/components/animations/reveal';
-import { GlassCard } from '@/components/ui/glass-card';
 import { solutions } from '@/data/solutions';
+import Link from 'next/link';
+import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+
+const productImages: Record<string, string> = {
+  'metals-alloys':          '/placeholder.jpg',
+  'polymers-composites':    '/placeholder.jpg',
+  'coatings-chemicals':     '/placeholder.jpg',
+  'compliance-certs':       '/placeholder.jpg',
+  'multi-site-fulfillment': '/placeholder.jpg',
+  'predictive-reorder':     '/placeholder.jpg',
+};
+
+const productDetails: Record<string, { overview: string; specs: string[]; applications: string[] }> = {
+  'metals-alloys': {
+    overview: 'Our metals & alloys sourcing covers the full spectrum of industrial-grade materials — from standard carbon steel to exotic titanium alloys. Every SKU comes with full mill certification and traceable heat numbers.',
+    specs: ['Carbon Steel (A36, A572)', 'Stainless Steel (304, 316, 17-4PH)', 'Aluminum (6061, 7075)', 'Titanium (Grade 2, Grade 5)', 'Nickel Alloys (Inconel, Hastelloy)'],
+    applications: ['Structural fabrication', 'Aerospace components', 'Automotive parts', 'Pressure vessels'],
+  },
+  'polymers-composites': {
+    overview: 'Engineering-grade thermoplastics and high-performance fiber-reinforced composites sourced from verified manufacturers with full spec documentation.',
+    specs: ['PEEK, PPS, PTFE', 'Carbon Fiber Reinforced Polymer', 'Glass Fiber Composites', 'Kevlar / Aramid', 'HDPE, UHMWPE'],
+    applications: ['Aerospace structures', 'Automotive body panels', 'Marine components', 'Industrial machinery'],
+  },
+  'coatings-chemicals': {
+    overview: 'Industrial coatings, adhesives, sealants, and process chemicals from certified manufacturers — all with SDS documentation and compliance flags built in.',
+    specs: ['Epoxy coatings', 'Polyurethane topcoats', 'Thermal barrier coatings', 'Anti-corrosion primers', 'Industrial adhesives'],
+    applications: ['Pipeline protection', 'Structural steel', 'Marine environments', 'High-temp equipment'],
+  },
+  'compliance-certs': {
+    overview: 'Automated cert validation, conflict minerals reporting, REACH/RoHS flagging, and DFARS tracking — all managed in one place so your audits are always ready.',
+    specs: ['ISO 9001 documentation', 'REACH / RoHS compliance', 'DFARS material tracking', 'Conflict minerals (CMRT)', 'Mill test reports'],
+    applications: ['Defense supply chains', 'Electronics manufacturing', 'Medical devices', 'Aerospace Tier suppliers'],
+  },
+  'multi-site-fulfillment': {
+    overview: 'Coordinates split fulfillment, site-specific delivery scheduling, and unified invoicing across all your locations under a single account.',
+    specs: ['Split shipment coordination', 'Site-specific delivery windows', 'Unified invoicing', 'Multi-location tracking', 'Single account dashboard'],
+    applications: ['National manufacturers', 'Construction project sites', 'Global OEMs', 'Distributed warehouses'],
+  },
+  'predictive-reorder': {
+    overview: 'Connect your production schedule to your procurement cadence — before a shortage hits your floor. Consumption-based alerts and reorder planning built in.',
+    specs: ['Consumption-based alerts', 'Production schedule sync', 'Shortage risk flagging', 'Reorder cadence planning', 'Inventory intelligence dashboard'],
+    applications: ['High-turnover production lines', 'JIT manufacturing', 'Seasonal demand planning', 'MRO management'],
+  },
+};
 
 export default function SolutionsPage() {
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const activeSolution = solutions.find((s) => s.id === selected);
+  const activeDetails  = selected ? productDetails[selected] : null;
+  const activeImage    = selected ? productImages[selected] : null;
+
   return (
     <div className="pt-20">
-      {/* Hero Section */}
-      <Section className="py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto text-center"
-        >
-          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6 text-balance">
+
+      {/* Hero */}
+      <Section className="bg-white py-20">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#17A2B8]" />
+            <span className="text-sm font-medium text-[#2C3E50]">Our Product Range</span>
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-bold text-[#2C3E50] mb-6 leading-tight">
             One Platform. Every Material.{' '}
             <span className="gradient-text">Full Visibility.</span>
           </h1>
-          <p className="text-xl text-gray-600">
-            Source, verify, order, and track every material your operation depends on —
-            from a single account with full documentation at every step.
+          <p className="text-xl text-[#6B7280]">
+            Click any product below to explore full details, specifications, and applications.
           </p>
         </motion.div>
       </Section>
 
-      {/* Solutions Grid */}
-      <Section className="bg-gradient-to-b from-white to-gray-50">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {solutions.map((solution, idx) => {
-            const Icon = solution.icon;
-            return (
-              <Reveal key={solution.id} delay={idx * 0.1}>
-                <GlassCard variant="light" className="flex flex-col h-full hover:border-teal-200/50">
-                  <div className="p-4 rounded-lg bg-teal-100 w-fit mb-6">
-                    <Icon size={32} className="text-teal-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{solution.title}</h3>
-                  <p className="text-gray-600 mb-6 flex-1">{solution.description}</p>
-                  <div className="space-y-2 mb-6">
-                    {solution.features.map((feature) => (
-                      <div key={feature} className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-teal-600 flex-shrink-0 mt-2" />
-                        <span className="text-sm text-gray-700">{feature}</span>
+      {/* Main: List + Detail */}
+      <Section className="bg-[#F8FAFB]" id="solutions">
+        <div className="flex flex-col lg:flex-row gap-8">
+
+          {/* ── Left: Product List ── */}
+          <div className="lg:w-80 shrink-0 space-y-3">
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4">Select a Product</p>
+            {solutions.map((solution, idx) => {
+              const Icon = solution.icon;
+              const isActive = selected === solution.id;
+              return (
+                <Reveal key={solution.id} delay={idx * 0.07}>
+                  <motion.button
+                    whileHover={{ x: 4 }}
+                    onClick={() => setSelected(isActive ? null : solution.id)}
+                    className={`w-full text-left rounded-2xl border-2 transition-all duration-200 overflow-hidden group ${
+                      isActive
+                        ? 'border-[#17A2B8] bg-white shadow-md'
+                        : 'border-gray-100 bg-white hover:border-[#D1F2F7] hover:shadow-sm'
+                    }`}
+                  >
+                    {/* Card image strip */}
+                    <div className={`relative h-28 overflow-hidden ${isActive ? 'bg-gradient-to-br from-[#17A2B8] to-[#0D7A8C]' : 'bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]'}`}>
+                      <img src={productImages[solution.id]} alt={solution.title} className="w-full h-full object-cover mix-blend-overlay opacity-40" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isActive ? 'bg-white' : 'bg-white/20'}`}>
+                          <Icon size={22} className={isActive ? 'text-[#17A2B8]' : 'text-white'} />
+                        </div>
                       </div>
-                    ))}
+                    </div>
+                    {/* Card text */}
+                    <div className="p-4 flex items-center justify-between">
+                      <div>
+                        <p className={`font-semibold text-sm ${isActive ? 'text-[#17A2B8]' : 'text-[#2C3E50]'}`}>{solution.title}</p>
+                        <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-1">{solution.description}</p>
+                      </div>
+                      <ArrowRight size={16} className={`shrink-0 ml-2 transition-transform duration-200 ${isActive ? 'text-[#17A2B8] translate-x-1' : 'text-gray-300 group-hover:text-[#17A2B8]'}`} />
+                    </div>
+                  </motion.button>
+                </Reveal>
+              );
+            })}
+          </div>
+
+          {/* ── Right: Detail Panel ── */}
+          <div className="flex-1 min-w-0">
+            <AnimatePresence mode="wait">
+              {!selected ? (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="h-full min-h-[400px] rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-12"
+                >
+                  <div className="w-16 h-16 rounded-2xl bg-[#E6F7FA] flex items-center justify-center mb-4">
+                    <ArrowLeft size={24} className="text-[#17A2B8]" />
                   </div>
-                  <CustomButton variant="ghost" size="sm" className="w-full justify-start">
-                    Learn More →
-                  </CustomButton>
-                </GlassCard>
-              </Reveal>
-            );
-          })}
+                  <p className="text-lg font-semibold text-[#2C3E50] mb-2">Select a product</p>
+                  <p className="text-sm text-[#6B7280]">Click any product card on the left to view full details, specs, and applications.</p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={selected}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.35 }}
+                  className="space-y-4"
+                >
+                  {/* ── Top block: Details left, Photo right ── */}
+                  <div className="bg-white rounded-2xl border-2 border-[#D1F2F7] overflow-hidden shadow-sm">
+                    <div className="grid md:grid-cols-2">
+                      {/* Left: Product info */}
+                      <div className="p-8 border-b md:border-b-0 md:border-r border-[#E6F7FA]">
+                        <div className="flex items-center gap-3 mb-5">
+                          {activeSolution && (
+                            <div className="w-12 h-12 rounded-xl bg-[#E6F7FA] flex items-center justify-center shrink-0">
+                              <activeSolution.icon size={22} className="text-[#17A2B8]" />
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-xs font-semibold text-[#17A2B8] uppercase tracking-wider">Product Details</p>
+                            <h2 className="text-xl font-bold text-[#2C3E50]">{activeSolution?.title}</h2>
+                          </div>
+                        </div>
+                        <p className="text-[#6B7280] text-sm leading-relaxed mb-5">{activeDetails?.overview}</p>
+                        <div className="space-y-2">
+                          {activeSolution?.features.map((f) => (
+                            <div key={f} className="flex items-center gap-2">
+                              <CheckCircle size={14} className="text-[#17A2B8] shrink-0" />
+                              <span className="text-sm text-[#2C3E50]">{f}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Right: Photo */}
+                      <div className="relative h-56 md:h-auto bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]">
+                        <img src={activeImage!} alt={activeSolution?.title} className="w-full h-full object-cover mix-blend-overlay opacity-50" />
+                        <div className="absolute inset-0 flex items-end p-5">
+                          <span className="text-xs font-semibold text-white/70 uppercase tracking-widest">Product Photo</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── Bottom block: Photo left, Specs right ── */}
+                  <div className="bg-white rounded-2xl border-2 border-[#D1F2F7] overflow-hidden shadow-sm">
+                    <div className="grid md:grid-cols-2">
+                      {/* Left: Photo */}
+                      <div className="relative h-56 md:h-auto bg-gradient-to-br from-[#17A2B8] to-[#0D7A8C] order-2 md:order-1">
+                        <img src={activeImage!} alt="Application" className="w-full h-full object-cover mix-blend-overlay opacity-40" />
+                        <div className="absolute inset-0 flex items-end p-5">
+                          <span className="text-xs font-semibold text-white/70 uppercase tracking-widest">Application Photo</span>
+                        </div>
+                      </div>
+                      {/* Right: Specs + Applications */}
+                      <div className="p-8 order-1 md:order-2 border-b md:border-b-0 md:border-l border-[#E6F7FA]">
+                        <div className="mb-6">
+                          <p className="text-xs font-semibold text-[#17A2B8] uppercase tracking-wider mb-3">Specifications</p>
+                          <div className="space-y-2">
+                            {activeDetails?.specs.map((spec) => (
+                              <div key={spec} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#F8FAFB] border border-gray-100">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#17A2B8] shrink-0" />
+                                <span className="text-sm text-[#2C3E50]">{spec}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-[#17A2B8] uppercase tracking-wider mb-3">Applications</p>
+                          <div className="flex flex-wrap gap-2">
+                            {activeDetails?.applications.map((app) => (
+                              <span key={app} className="px-3 py-1 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] text-xs font-medium text-[#2C3E50]">
+                                {app}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <Link href="/contact" className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors">
+                          Request a Quote <ArrowRight size={15} />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </Section>
 
-      {/* Integration Section */}
+      {/* Results */}
       <Section className="bg-white">
-        <SectionTitle
-          subtitle="CONNECTS WITH YOUR EXISTING STACK"
-          title="Works With Your Tools"
-          description="VALTRIX integrates with leading ERP, MRP, and procurement platforms so your sourcing data flows where your operations team already works — no manual reentry, no reconciliation headaches."
-        />
-
-        <div className="mt-12 grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+        <SectionTitle subtitle="PROVEN RESULTS" title="What You Can Expect" description="Numbers from manufacturers already running on VAM VALTRIX" />
+        <div className="mt-12 space-y-4 max-w-3xl mx-auto">
           {[
-            {
-              title: 'ERP & MRP Integration',
-              description: 'Connect directly to SAP, Oracle, and other major ERP/MRP systems for seamless data flow.',
-            },
-            {
-              title: 'Procurement Platform Sync',
-              description: 'Works with Coupa, Ariba, and other procurement platforms your team already uses.',
-            },
-            {
-              title: 'Real-Time Order Data',
-              description: 'Order status, shipment tracking, and cert documentation sync automatically to your systems.',
-            },
-            {
-              title: 'Custom API Access',
-              description: 'Full REST API for teams who need custom integrations with proprietary internal systems.',
-            },
-          ].map((item, idx) => (
-            <Reveal key={item.title} delay={idx * 0.1}>
-              <motion.div className="p-6 border border-gray-200 rounded-lg hover:border-teal-600 hover:shadow-lg transition-all">
-                <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600 text-sm">{item.description}</p>
-              </motion.div>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      {/* Benefits Section */}
-      <Section className="bg-gradient-to-b from-gray-50 to-white">
-        <SectionTitle
-          subtitle="PROVEN RESULTS"
-          title="What You Can Expect"
-          description="Numbers from manufacturers already running on VALTRIX"
-        />
-
-        <div className="mt-12 space-y-6 max-w-3xl mx-auto">
-          {[
-            {
-              benefit: '38% Average Lead Time Reduction',
-              description: 'Procurement cycles cut from weeks to days across metals, polymers, and coatings.',
-            },
-            {
-              benefit: '97.4% On-Time Fulfillment Rate',
-              description: 'Earned across 99,000+ orders — not a marketing number.',
-            },
-            {
-              benefit: '360° End-to-End Order Visibility',
-              description: 'From quote to delivery, every step is tracked and documented in your account.',
-            },
-            {
-              benefit: '<4 hrs Average Response on Custom Sourcing Requests',
-              description: 'When you need something outside the catalog, our sourcing team moves fast.',
-            },
+            { benefit: '38% Average Lead Time Reduction',            description: 'Procurement cycles cut from weeks to days across metals, polymers, and coatings.' },
+            { benefit: '97.4% On-Time Fulfillment Rate',             description: 'Earned across 99,000+ orders — not a marketing number.' },
+            { benefit: '360° End-to-End Order Visibility',           description: 'From quote to delivery, every step is tracked and documented in your account.' },
+            { benefit: '<4 hrs Average Response on Custom Requests', description: 'When you need something outside the catalog, our sourcing team moves fast.' },
           ].map((item, idx) => (
             <Reveal key={item.benefit} delay={idx * 0.1} direction="left">
-              <motion.div
-                whileHover={{ x: 10 }}
-                className="flex gap-4 p-6 bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-all"
-              >
-                <div className="w-12 h-12 flex items-center justify-center bg-teal-100 rounded-lg flex-shrink-0">
-                  <span className="text-teal-600 font-bold text-lg">{idx + 1}</span>
+              <motion.div whileHover={{ x: 6 }} className="flex gap-4 p-6 bg-white rounded-2xl border-2 border-gray-100 hover:border-[#D1F2F7] hover:shadow-sm transition-all">
+                <div className="w-12 h-12 flex items-center justify-center bg-[#E6F7FA] rounded-xl shrink-0">
+                  <span className="text-[#17A2B8] font-bold text-lg">{idx + 1}</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 mb-1">{item.benefit}</h3>
-                  <p className="text-gray-600 text-sm">{item.description}</p>
+                  <h3 className="font-bold text-[#2C3E50] mb-1">{item.benefit}</h3>
+                  <p className="text-[#6B7280] text-sm">{item.description}</p>
                 </div>
               </motion.div>
             </Reveal>
@@ -142,16 +254,15 @@ export default function SolutionsPage() {
         </div>
       </Section>
 
-      {/* CTA Section */}
-      <Section className="bg-gradient-to-r from-teal-600 to-cyan-500 text-white text-center py-20">
-        <h2 className="text-4xl font-bold mb-6">Get Started With a No-Commitment Sourcing Request</h2>
-        <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-          Tell us what you need. We&apos;ll show you what we can source, at what price, and how fast —
-          before you commit to anything.
+      {/* CTA */}
+      <Section className="bg-[#2C3E50] text-white text-center py-20">
+        <h2 className="text-4xl font-bold mb-4">Get Started With a No-Commitment Sourcing Request</h2>
+        <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+          Tell us what you need. We&apos;ll show you what we can source, at what price, and how fast — before you commit to anything.
         </p>
-        <CustomButton variant="secondary" size="lg">
-          Request a Quote
-        </CustomButton>
+        <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors">
+          Request a Quote <ArrowRight size={18} />
+        </Link>
       </Section>
     </div>
   );

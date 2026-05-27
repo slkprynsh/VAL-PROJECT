@@ -8,6 +8,7 @@ interface RevealProps {
   delay?: number;
   duration?: number;
   direction?: 'up' | 'down' | 'left' | 'right';
+  className?: string;
 }
 
 export function Reveal({
@@ -15,6 +16,7 @@ export function Reveal({
   delay = 0,
   duration = 0.5,
   direction = 'up',
+  className,
 }: RevealProps) {
   const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
 
@@ -34,6 +36,7 @@ export function Reveal({
       animate={inView ? animate : initial}
       transition={{ duration, delay }}
       style={{ willChange: 'transform, opacity' }}
+      className={className}
     >
       {children}
     </motion.div>
