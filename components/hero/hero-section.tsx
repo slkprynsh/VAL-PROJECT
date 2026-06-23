@@ -26,8 +26,8 @@ const carouselSlides = [
     caption: 'Anti-corrosion, thermal barrier & wear-resistant industrial coatings.',
   },
   {
-    // specialtypolymers.jpg — lab with polymer beads, flasks, molecular display
-    image: '/specialtypolymers.jpg',
+    // specialpolymers.jpg — lab with polymer beads, flasks, molecular display
+    image: '/specialpolymers.jpg',
     label: 'Specialty Polymers',
     caption: 'High-performance polymers & sustainable materials for industrial use.',
   },
