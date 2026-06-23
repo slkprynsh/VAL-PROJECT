@@ -8,7 +8,8 @@ import { api } from '@/lib/api';
 
 const carouselSlides = [
   {
-    image: '/placeholder.jpg',
+    // compositematerials.jpg — autoclave composite development facility, carbon fiber layup
+    image: '/compositematerials.jpg',
     label: 'Composite Materials',
     caption: 'Carbon fiber, glass fiber & Kevlar composites for aerospace and automotive.',
   },
