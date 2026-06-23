@@ -1,97 +1,95 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Section, SectionTitle } from '@/components/ui/section';
-import { TestimonialCard } from '@/components/cards/testimonial-card';
-import { testimonials } from '@/data/testimonials';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Reveal } from '@/components/animations/reveal';
+
+const threatCards = [
+  {
+    title: 'Equipment Failure',
+    description: 'Substandard materials accelerate wear and cause unexpected breakdowns, resulting in costly unplanned downtime across production lines.',
+    gradient: 'from-[#1a2e40] to-[#0D7A8C]',
+  },
+  {
+    title: 'Economic Loss',
+    description: 'Supply chain failures cost global manufacturers billions annually — from line stoppages, emergency sourcing premiums, and expedited freight.',
+    gradient: 'from-[#0D7A8C] to-[#17A2B8]',
+  },
+  {
+    title: 'Surface Degradation',
+    description: 'Unprotected or improperly specified materials degrade rapidly in harsh environments, compounding maintenance costs and compliance risk.',
+    gradient: 'from-[#2C3E50] to-[#1a2e40]',
+  },
+];
 
 export function TestimonialsSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const nextSlide = () => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevSlide = () => {
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
   return (
-    <Section className="bg-gradient-to-b from-gray-900 to-black text-white">
-      <SectionTitle
-        subtitle="FROM THE FLOOR UP"
-        title="What Procurement Teams Are Saying"
-        description="Real feedback from the engineers, buyers, and operations leads who rely on VALTRIX every day."
-        className="text-white"
-      />
+    <section className="bg-white py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div className="mt-12 relative">
-        {/* Carousel */}
-        <div className="relative overflow-hidden rounded-2xl">
+        {/* Heading row */}
+        <div className="grid md:grid-cols-2 gap-10 items-center mb-14">
           <motion.div
-            key={activeIndex}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {[activeIndex, activeIndex + 1, activeIndex + 2].map((idx) => {
-              const testimonial = testimonials[idx % testimonials.length];
-              return (
-                <div key={testimonial.id}>
-                  <TestimonialCard {...testimonial} />
-                </div>
-              );
-            })}
+            <h2 className="text-4xl md:text-5xl font-bold text-[#2C3E50] leading-tight">
+              Material Failure is an{' '}
+              <span className="text-[#17A2B8]">Economic Threat.</span>
+            </h2>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <p className="text-[#6B7280] leading-relaxed text-lg">
+              Equipment downtime directly impacts the bottom line. Material failures in industrial
+              environments cascade into production delays, compliance violations, and lost revenue.
+              Valtrix eliminates this risk at the source.
+            </p>
           </motion.div>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-center gap-4 mt-10">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={prevSlide}
-            className="p-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white transition-colors"
-          >
-            <ChevronLeft size={20} />
-          </motion.button>
+        {/* Threat cards */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {threatCards.map((card, idx) => (
+            <Reveal key={card.title} delay={idx * 0.1}>
+              <motion.div
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.25 }}
+                className="rounded-2xl overflow-hidden border border-gray-100 hover:border-[#D1F2F7] hover:shadow-md transition-all duration-300 group"
+              >
+                {/* Gradient image area */}
+                <div className={`relative h-48 bg-gradient-to-br ${card.gradient} overflow-hidden`}>
+                  <img
+                    src="/placeholder.jpg"
+                    alt={card.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <span className="text-xs font-bold uppercase tracking-widest text-white/70">
+                      {card.title}
+                    </span>
+                  </div>
+                </div>
 
-          {/* Dots */}
-          <div className="flex gap-2">
-            {testimonials.map((_, idx) => (
-              <motion.button
-                key={idx}
-                onClick={() => setActiveIndex(idx)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  idx === activeIndex
-                    ? 'bg-teal-600 w-8'
-                    : 'bg-gray-600 hover:bg-gray-500'
-                }`}
-              />
-            ))}
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={nextSlide}
-            className="p-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white transition-colors"
-          >
-            <ChevronRight size={20} />
-          </motion.button>
+                {/* Content */}
+                <div className="p-5 bg-white">
+                  <h3 className="font-bold text-[#2C3E50] mb-2 group-hover:text-[#17A2B8] transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="text-sm text-[#6B7280] leading-relaxed">{card.description}</p>
+                </div>
+              </motion.div>
+            </Reveal>
+          ))}
         </div>
       </div>
-    </Section>
+    </section>
   );
 }
