@@ -13,13 +13,14 @@ const carouselSlides = [
     caption: 'Carbon fiber, glass fiber & Kevlar composites for aerospace and automotive.',
   },
   {
-    image: '/placeholder.jpg',
+    // advancedalloys.jpg — alloy development trials lab, VIM furnace, microstructure analysis
+    image: '/advancedalloys.jpg',
     label: 'Advanced Alloys',
     caption: 'Titanium, nickel-based & aluminum alloys engineered for extreme conditions.',
   },
   {
-    // coating-application.jpg — worker spray-coating steel beam, Marine/Oil & Gas/Infrastructure
-    image: '/coating-application.jpg',
+    // protectivelayer.jpg — worker spray-coating steel beam, Marine/Oil & Gas/Infrastructure
+    image: '/protectivelayer.jpg',
     label: 'Protective Coatings',
     caption: 'Anti-corrosion, thermal barrier & wear-resistant industrial coatings.',
   },
