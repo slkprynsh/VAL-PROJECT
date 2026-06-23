@@ -8,22 +8,23 @@ import { api } from '@/lib/api';
 
 const carouselSlides = [
   {
-    image: '/galvanizing.png',
+    image: '/placeholder.jpg',
     label: 'Composite Materials',
     caption: 'Carbon fiber, glass fiber & Kevlar composites for aerospace and automotive.',
   },
   {
-    image: '/lab.png',
+    image: '/placeholder.jpg',
     label: 'Advanced Alloys',
     caption: 'Titanium, nickel-based & aluminum alloys engineered for extreme conditions.',
   },
   {
-    image: '/galvanizing.png',
+    // coating-application.jpg — worker spray-coating steel beam, Marine/Oil & Gas/Infrastructure
+    image: '/coating-application.jpg',
     label: 'Protective Coatings',
     caption: 'Anti-corrosion, thermal barrier & wear-resistant industrial coatings.',
   },
   {
-    image: '/lab.png',
+    image: '/placeholder.jpg',
     label: 'Specialty Polymers',
     caption: 'High-performance polymers & sustainable materials for industrial use.',
   },
@@ -151,7 +152,11 @@ export function HeroSection() {
                   <img
                     src={carouselSlides[current].image}
                     alt={carouselSlides[current].label}
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full object-cover transition-all duration-500 ${
+                      carouselSlides[current].label === 'Protective Coatings'
+                        ? 'object-top'   // frame the action — worker + cans
+                        : ''
+                    }`}
                   />
                   {/* Slide content */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8">
