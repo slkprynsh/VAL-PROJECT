@@ -30,38 +30,61 @@ export function Footer() {
     e.preventDefault();
     setMessage('');
 
+    // Honeypot — bots fill this, humans don't
     if (honeypot) {
-      // Quietly succeed to fool bots
       setStatus('success');
       setMessage('Thank you for subscribing!');
       setEmail('');
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Strict email validation
+    const trimmed = email.trim().toLowerCase();
+    const emailRegex = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/;
+    if (!emailRegex.test(trimmed) || trimmed.length > 254) {
       setStatus('error');
       setMessage('Please enter a valid email address.');
       return;
     }
 
+    // Block disposable email domains
+    const blockedDomains = ['mailinator.com', 'guerrillamail.com', 'trashmail.com', 'tempmail.com'];
+    if (blockedDomains.includes(trimmed.split('@')[1])) {
+      setStatus('error');
+      setMessage('Please use a work email address.');
+      return;
+    }
+
     setStatus('loading');
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/newsletter/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json() as { success: boolean; message?: string };
+      const controller = new AbortController();
+      const timeoutId  = setTimeout(() => controller.abort(), 10_000);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/newsletter/subscribe`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: trimmed }),
+          signal: controller.signal,
+        }
+      );
+      clearTimeout(timeoutId);
+
       if (!res.ok) {
-        throw new Error(data.message || 'Subscription failed');
+        throw new Error('Subscription failed');
       }
       setStatus('success');
       setMessage('Thank you for subscribing!');
       setEmail('');
     } catch (err) {
       setStatus('error');
-      setMessage(err instanceof Error ? err.message : 'Something went wrong.');
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setMessage('Request timed out. Please try again.');
+      } else {
+        // Generic message — never expose server details
+        setMessage('Unable to subscribe right now. Please try again later.');
+      }
     }
   };
 
@@ -75,17 +98,18 @@ export function Footer() {
             <p className="text-sm text-gray-400">Get the latest updates on advanced materials and innovation.</p>
           </div>
           <div className="max-w-sm w-full">
-            <form className="flex gap-2" onSubmit={handleSubscribe}>
-              {/* Honeypot field to block bots */}
-              <input
-                type="text"
-                name="website"
-                value={honeypot}
-                onChange={(e) => setHoneypot(e.target.value)}
-                className="hidden"
-                tabIndex={-1}
-                autoComplete="off"
-              />
+            <form className="flex gap-2" onSubmit={handleSubscribe} noValidate>
+              {/* Honeypot — aria-hidden so screen readers skip it, tab-index -1 so keyboard users skip it */}
+              <div aria-hidden="true" className="absolute opacity-0 pointer-events-none h-0 overflow-hidden">
+                <input
+                  type="text"
+                  name="website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
               <input
                 type="email"
                 placeholder="Enter your email"

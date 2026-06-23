@@ -6,65 +6,64 @@ import { Section, SectionTitle } from '@/components/ui/section';
 import { Reveal } from '@/components/animations/reveal';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { api } from '@/lib/api';
-
-declare global {
-  interface Window {
-    grecaptcha: any;
-  }
-}
+import { validateContactForm, sanitiseString, getRecaptchaToken } from '@/lib/validation';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', company: '', message: '' });
-  const [status, setStatus]     = useState<'idle'|'loading'|'success'|'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [validationError, setValidationError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [status,    setStatus]    = useState<'idle'|'loading'|'success'|'error'>('idle');
+  const [errorMsg,  setErrorMsg]  = useState('');
+
+  // Honeypot — bots fill this, humans don't
+  const [honeypot, setHoneypot] = useState('');
+
+  const handleChange = (field: keyof typeof formData) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    // Clear field error on change
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setValidationError('');
+    setErrorMsg('');
 
-    // Client-side validations
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setValidationError('Please fill in all required fields.');
+    // Honeypot check — silently reject bots
+    if (honeypot) {
+      setStatus('success');
       return;
     }
 
-    if (formData.name.length > 100) {
-      setValidationError('Name must be 100 characters or less.');
-      return;
-    }
-
-    if (formData.email.length > 100) {
-      setValidationError('Email must be 100 characters or less.');
-      return;
-    }
-
-    if (formData.message.length > 5000) {
-      setValidationError('Message must be 5000 characters or less.');
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setValidationError('Please enter a valid email address.');
+    // Validate all fields
+    const errors = validateContactForm(formData);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
     setStatus('loading');
-    try {
-      let token = '';
-      if (typeof window !== 'undefined' && window.grecaptcha) {
-        token = await window.grecaptcha.execute(
-          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
-          { action: 'contact' }
-        );
-      }
 
-      await api.contact.send({ ...formData, recaptchaToken: token });
+    try {
+      // Get reCAPTCHA v3 token
+      const recaptchaToken = await getRecaptchaToken('contact');
+
+      await api.contact.send({
+        name:    sanitiseString(formData.name),
+        email:   formData.email.trim().toLowerCase(),
+        company: formData.company ? sanitiseString(formData.company) : undefined,
+        message: sanitiseString(formData.message),
+        recaptchaToken,
+      });
+
       setStatus('success');
       setFormData({ name: '', email: '', company: '', message: '' });
+      setFieldErrors({});
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong');
+      // Only show a safe generic message — never expose internals
+      setErrorMsg('Unable to send your message. Please try again or email us directly.');
       setStatus('error');
     }
   };
@@ -74,7 +73,12 @@ export default function ContactPage() {
 
       {/* Hero */}
       <Section className="bg-white py-24">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mx-auto text-center"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-6">
             <span className="w-2 h-2 rounded-full bg-[#17A2B8]" />
             <span className="text-sm font-medium text-[#2C3E50]">Get In Touch</span>
@@ -97,9 +101,9 @@ export default function ContactPage() {
           <div className="lg:col-span-1 space-y-8">
             <SectionTitle subtitle="CONTACT INFO" title="Reach Out" className="text-left mb-2" />
             {[
-              { icon: Mail,    title: 'Email',  lines: ['info@vamvaltrix.com', 'sourcing@vamvaltrix.com'] },
-              { icon: Phone,   title: 'Phone',  lines: ['+91 22 4976 8900', 'Mon–Fri, 9am–6pm IST'] },
-              { icon: MapPin,  title: 'Office', lines: ['Advance Material Pvt. Ltd', 'India'] },
+              { icon: Mail,   title: 'Email',  lines: ['info@vamvaltrix.com', 'sourcing@vamvaltrix.com'] },
+              { icon: Phone,  title: 'Phone',  lines: ['+91 22 4976 8900', 'Mon–Fri, 9am–6pm IST'] },
+              { icon: MapPin, title: 'Office', lines: ['Advance Material Pvt. Ltd', 'India'] },
             ].map(({ icon: Icon, title, lines }, idx) => (
               <Reveal key={title} direction="left" delay={idx * 0.1}>
                 <div className="flex gap-4">
@@ -117,35 +121,111 @@ export default function ContactPage() {
 
           {/* Form */}
           <Reveal direction="right" className="lg:col-span-2">
-            <motion.form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
-              {validationError && (
-                <div className="mb-5 p-3.5 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">
-                  ⚠️ {validationError}
-                </div>
-              )}
+            <motion.form
+              onSubmit={handleSubmit}
+              noValidate
+              autoComplete="off"
+              className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm"
+            >
+              {/* Honeypot field — visually hidden, aria-hidden so screen readers skip it */}
+              <div aria-hidden="true" className="absolute opacity-0 pointer-events-none h-0 overflow-hidden">
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  autoComplete="off"
+                />
+              </div>
+
               <div className="grid md:grid-cols-2 gap-5 mb-5">
+                {/* Name */}
                 <div>
-                  <label className="block text-sm font-semibold text-[#2C3E50] mb-2">Full Name *</label>
-                  <input type="text" placeholder="Your name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required maxLength={100}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                  <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-name">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="contact-name"
+                    type="text"
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={handleChange('name')}
+                    required
+                    maxLength={100}
+                    autoComplete="name"
+                    aria-describedby={fieldErrors.name ? 'name-error' : undefined}
+                    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors ${fieldErrors.name ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                  />
+                  {fieldErrors.name && (
+                    <p id="name-error" role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.name}</p>
+                  )}
                   <span className="text-xs text-gray-400 block mt-1 text-right">{formData.name.length}/100</span>
                 </div>
+
+                {/* Email */}
                 <div>
-                  <label className="block text-sm font-semibold text-[#2C3E50] mb-2">Email *</label>
-                  <input type="email" placeholder="you@company.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required maxLength={100}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
-                  <span className="text-xs text-gray-400 block mt-1 text-right">{formData.email.length}/100</span>
+                  <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-email">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    placeholder="you@company.com"
+                    value={formData.email}
+                    onChange={handleChange('email')}
+                    required
+                    maxLength={254}
+                    autoComplete="email"
+                    aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+                    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors ${fieldErrors.email ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                  />
+                  {fieldErrors.email && (
+                    <p id="email-error" role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>
+                  )}
+                  <span className="text-xs text-gray-400 block mt-1 text-right">{formData.email.length}/254</span>
                 </div>
               </div>
+
+              {/* Company */}
               <div className="mb-5">
-                <label className="block text-sm font-semibold text-[#2C3E50] mb-2">Company</label>
-                <input type="text" placeholder="Your company" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} maxLength={100}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-company">
+                  Company
+                </label>
+                <input
+                  id="contact-company"
+                  type="text"
+                  placeholder="Your company"
+                  value={formData.company}
+                  onChange={handleChange('company')}
+                  maxLength={100}
+                  autoComplete="organization"
+                  className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors ${fieldErrors.company ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                />
+                {fieldErrors.company && (
+                  <p role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.company}</p>
+                )}
               </div>
+
+              {/* Message */}
               <div className="mb-6">
-                <label className="block text-sm font-semibold text-[#2C3E50] mb-2">What are you sourcing? *</label>
-                <textarea placeholder="Describe the material, spec, quantity, and timeline..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} required rows={5} maxLength={5000}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] resize-none" />
+                <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-message">
+                  What are you sourcing? <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="contact-message"
+                  placeholder="Describe the material, spec, quantity, and timeline..."
+                  value={formData.message}
+                  onChange={handleChange('message')}
+                  required
+                  rows={5}
+                  maxLength={5000}
+                  aria-describedby={fieldErrors.message ? 'message-error' : undefined}
+                  className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] resize-none transition-colors ${fieldErrors.message ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                />
+                {fieldErrors.message && (
+                  <p id="message-error" role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.message}</p>
+                )}
                 <span className="text-xs text-gray-400 block mt-1 text-right">{formData.message.length}/5000</span>
               </div>
 
@@ -154,12 +234,30 @@ export default function ContactPage() {
                   <p className="font-semibold text-[#17A2B8]">✓ Message received — we&apos;ll be in touch within a few hours.</p>
                 </div>
               ) : (
-                <motion.button whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} type="submit" disabled={status === 'loading'}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#17A2B8] hover:bg-[#0D7A8C] disabled:opacity-60 text-white rounded-lg font-semibold transition-colors">
-                  {status === 'loading' ? 'Sending...' : <><span>Send Message</span><Send size={18} /></>}
-                </motion.button>
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    type="submit"
+                    disabled={status === 'loading'}
+                    aria-busy={status === 'loading'}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#17A2B8] hover:bg-[#0D7A8C] disabled:opacity-60 text-white rounded-lg font-semibold transition-colors"
+                  >
+                    {status === 'loading' ? 'Sending…' : <><span>Send Message</span><Send size={18} /></>}
+                  </motion.button>
+                  {status === 'error' && (
+                    <p role="alert" className="text-center text-sm text-red-600 mt-3">{errorMsg}</p>
+                  )}
+                </>
               )}
-              {status === 'error' && <p className="text-center text-sm text-red-600 mt-3">{errorMsg}</p>}
+
+              <p className="text-xs text-gray-400 text-center mt-4">
+                Protected by reCAPTCHA.{' '}
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#17A2B8]">Privacy</a>
+                {' & '}
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#17A2B8]">Terms</a>
+                {' apply.'}
+              </p>
             </motion.form>
           </Reveal>
         </div>
@@ -194,8 +292,11 @@ export default function ContactPage() {
         <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
           Tell us what you need. A VAM VALTRIX sourcing specialist will follow up with options, pricing, and lead times — usually within the same business day.
         </p>
-        <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors">
+        <a
+          href="#"
+          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors"
+        >
           Request a Quote →
         </a>
       </Section>
