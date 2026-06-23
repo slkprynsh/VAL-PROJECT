@@ -1,8 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface CounterProps {
   end: number;
@@ -11,45 +10,32 @@ interface CounterProps {
   prefix?: string;
 }
 
-export function Counter({
-  end,
-  duration = 2,
-  suffix = '',
-  prefix = '',
-}: CounterProps) {
+export function Counter({ end, duration = 1.8, suffix = '', prefix = '' }: CounterProps) {
   const [count, setCount] = useState(0);
+  const rafRef = useRef<number | null>(null);
   const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true });
 
   useEffect(() => {
     if (!inView) return;
 
-    let startTime: number;
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const elapsed = (currentTime - startTime) / 1000;
-      const progress = Math.min(elapsed / duration, 1);
-      setCount(Math.floor(end * progress));
+    const startTime = performance.now();
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
+    const tick = (now: number) => {
+      const elapsed  = (now - startTime) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease-out quad for a natural deceleration feel
+      const eased    = 1 - (1 - progress) * (1 - progress);
+      setCount(Math.floor(end * eased));
+      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
     };
 
-    requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [inView, end, duration]);
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.5 }}
-    >
-      <span>
-        {prefix}
-        {count.toLocaleString()}
-        {suffix}
-      </span>
-    </motion.div>
+    <span ref={ref}>
+      {prefix}{count.toLocaleString()}{suffix}
+    </span>
   );
 }

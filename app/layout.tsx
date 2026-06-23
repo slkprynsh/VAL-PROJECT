@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Script from 'next/script';
 import { Navbar } from '@/components/navbar/navbar';
 import { Footer } from '@/components/footer/footer';
 import { CookieConsent } from '@/components/ui/cookie-consent';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+// Subset + display:swap eliminates render-blocking font flash
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: 'VAM VALTRIX – Advance Material Pvt. Ltd',
@@ -29,27 +34,37 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  'name': 'VAM VALTRIX – Advance Material Pvt. Ltd',
-  'url': 'https://valtrix-frontend-y7df.vercel.app',
-  'logo': 'https://valtrix-frontend-y7df.vercel.app/valtrix-logo.png',
-  'contactPoint': {
+  name: 'VAM VALTRIX – Advance Material Pvt. Ltd',
+  url: 'https://vamvaltrix.com',
+  logo: 'https://vamvaltrix.com/valtrix-logo.png',
+  contactPoint: {
     '@type': 'ContactPoint',
-    'telephone': '+91 22 4976 8900',
-    'contactType': 'customer service',
-    'areaServed': 'IN',
-    'availableLanguage': ['en', 'hi'],
+    telephone: '+91 22 4976 8900',
+    contactType: 'customer service',
+    areaServed: 'IN',
+    availableLanguage: ['en', 'hi'],
   },
-  'address': {
+  address: {
     '@type': 'PostalAddress',
-    'streetAddress': 'Advance Material Pvt. Ltd',
-    'addressCountry': 'India',
+    streetAddress: 'Advance Material Pvt. Ltd',
+    addressCountry: 'India',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${inter.variable}`}>
       <head>
+        {/* DNS prefetch for external origins used across the site */}
+        <link rel="dns-prefetch" href="https://www.google.com" />
+        <link rel="dns-prefetch" href="https://www.gstatic.com" />
+        <link rel="dns-prefetch" href="https://valtrix-backend-y7df.vercel.app" />
+
+        {/* Preconnect to font origin — eliminates connection latency */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* Structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -60,10 +75,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
         <CookieConsent />
-        <Script
-          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'}`}
-          strategy="afterInteractive"
-        />
+        {/*
+          reCAPTCHA is NOT loaded here globally anymore.
+          It is loaded only on the /contact page to avoid
+          adding ~150 KB to every page's initial load.
+        */}
       </body>
     </html>
   );

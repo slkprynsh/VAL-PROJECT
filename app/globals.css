@@ -44,7 +44,7 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter', 'system-ui', '-apple-system', 'sans-serif';
+  --font-sans: var(--font-inter, 'Inter', 'system-ui', '-apple-system', 'sans-serif');
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -73,13 +73,40 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Prevent layout thrash from box-sizing changes */
+    box-sizing: border-box;
   }
+
   html {
     scroll-behavior: smooth;
+    /* Momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent font size inflation on mobile */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
+
   body {
     @apply bg-white text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-inter, 'Inter', system-ui, -apple-system, sans-serif);
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Prevent horizontal overflow */
+    overflow-x: hidden;
+  }
+
+  /* Remove default focus outline jank — use ring utilities instead */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Smooth image rendering */
+  img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
   }
 }
 
@@ -99,9 +126,11 @@
   }
 }
 
+/* ── Keyframes ─────────────────────────────────────────────────────────── */
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-20px); }
+  50%       { transform: translateY(-16px); }
 }
 
 @keyframes blob {
@@ -115,15 +144,34 @@
   100% { transform: translateX(-50%); }
 }
 
-@keyframes scroll-indicator {
-  0%   { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(12px); }
-}
+/* ── Utilities ─────────────────────────────────────────────────────────── */
 
 @layer utilities {
-  .animate-float           { animation: float 6s ease-in-out infinite; }
-  .animate-blob            { animation: blob 7s infinite; }
-  .animate-infinite-scroll { animation: infinite-scroll 30s linear infinite; }
-  .animation-delay-2000    { animation-delay: 2s; }
-  .animation-delay-4000    { animation-delay: 4s; }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+    /* GPU-composited — no layout reflow */
+    will-change: transform;
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+    will-change: transform;
+  }
+
+  .animate-infinite-scroll {
+    animation: infinite-scroll 35s linear infinite;
+    /* GPU layer for the scroll strip */
+    will-change: transform;
+    /* Pause on hover so users can read */
+    &:hover { animation-play-state: paused; }
+  }
+
+  .animation-delay-2000 { animation-delay: 2s; }
+  .animation-delay-4000 { animation-delay: 4s; }
+
+  /* Utility to promote an element to its own GPU layer when actively animating */
+  .gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
 }

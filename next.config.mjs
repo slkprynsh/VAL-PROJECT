@@ -18,7 +18,10 @@ const nextConfig = {
 
   // ── Image optimisation ───────────────────────────────────────────────
   images: {
-    unoptimized: true,
+    unoptimized: false, // enable Next.js image optimisation for faster loads
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 64, 96, 128, 256],
     // Only allow images from these origins
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
@@ -93,19 +96,6 @@ const nextConfig = {
           { key: 'Cross-Origin-Opener-Policy',   value: 'same-origin' },
           { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' }, // set to require-corp if you control all sub-resources
           { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
-        ],
-      },
-      // Cache static assets aggressively but never cache HTML pages
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
-      {
-        source: '/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'no-store, must-revalidate' },
         ],
       },
     ];

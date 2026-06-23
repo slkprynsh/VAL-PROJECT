@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Script from 'next/script';
 import { motion } from 'framer-motion';
 import { Section, SectionTitle } from '@/components/ui/section';
 import { Reveal } from '@/components/animations/reveal';
@@ -70,6 +71,11 @@ export default function ContactPage() {
 
   return (
     <div className="pt-20">
+      {/* Load reCAPTCHA only on this page — keeps other pages fast */}
+      <Script
+        src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ''}`}
+        strategy="afterInteractive"
+      />
 
       {/* Hero */}
       <Section className="bg-white py-24">

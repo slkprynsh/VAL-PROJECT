@@ -1,5 +1,5 @@
 /**
- * Next.js Edge Middleware — Security layer
+ * Next.js Edge Proxy — Security layer
  *
  * Runs on every request before it reaches the app:
  *  1. Blocks obviously malicious URL patterns (path traversal, null bytes, etc.)
@@ -66,8 +66,8 @@ const BLOCKED_UA_PATTERNS = [
   /go-http-client\/1\./i,     // Go scanner pattern
 ];
 
-// ── Middleware entry point ─────────────────────────────────────────────
-export function middleware(req: NextRequest) {
+// ── Proxy entry point (Next.js 16+ convention) ────────────────────────
+export function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const fullPath = pathname + search;
   const ua       = req.headers.get('user-agent') ?? '';
@@ -112,7 +112,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Run on all routes except Next.js internals and static files
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf|eot)).*)',
   ],
