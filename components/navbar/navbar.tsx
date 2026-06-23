@@ -38,9 +38,9 @@ export function Navbar() {
         <div className="bg-[#2C3E50] text-white py-2">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-sm">
             <div className="flex items-center gap-6">
-              <a href="tel:+91" className="flex items-center gap-1.5 hover:text-[#D1F2F7] transition-colors">
+              <a href="tel:+912249768900" className="flex items-center gap-1.5 hover:text-[#D1F2F7] transition-colors">
                 <Phone size={13} />
-                <span>+91 XXX XXX XXXX</span>
+                <span>+91 22 4976 8900</span>
               </a>
               <a href="mailto:info@vamvaltrix.com" className="hidden md:flex items-center gap-1.5 hover:text-[#D1F2F7] transition-colors">
                 <Mail size={13} />

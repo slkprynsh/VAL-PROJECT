@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Twitter, Linkedin, Instagram, Phone, Mail, MapPin } from 'lucide-react';
@@ -11,21 +12,59 @@ const footerLinks = {
     { label: 'Industries', href: '/industries'  },
     { label: 'Impact',     href: '/impact'      },
   ],
-  Resources: [
-    { label: 'Documentation', href: '#' },
-    { label: 'Help Center',   href: '#' },
-    { label: 'Case Studies',  href: '#' },
-    { label: 'Status',        href: '#' },
-  ],
   Legal: [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Use',   href: '#' },
-    { label: 'Cookies',        href: '#' },
-    { label: 'Compliance',     href: '#' },
+    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Terms of Use',   href: '/terms-of-use'   },
+    { label: 'Cookies',        href: '/cookies'        },
+    { label: 'Compliance',     href: '/compliance'     },
   ],
 };
 
 export function Footer() {
+  const [email, setEmail] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage('');
+
+    if (honeypot) {
+      // Quietly succeed to fool bots
+      setStatus('success');
+      setMessage('Thank you for subscribing!');
+      setEmail('');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setStatus('error');
+      setMessage('Please enter a valid email address.');
+      return;
+    }
+
+    setStatus('loading');
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/newsletter/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json() as { success: boolean; message?: string };
+      if (!res.ok) {
+        throw new Error(data.message || 'Subscription failed');
+      }
+      setStatus('success');
+      setMessage('Thank you for subscribing!');
+      setEmail('');
+    } catch (err) {
+      setStatus('error');
+      setMessage(err instanceof Error ? err.message : 'Something went wrong.');
+    }
+  };
+
   return (
     <footer className="bg-[#2C3E50] text-gray-300">
       {/* Newsletter banner */}
@@ -35,25 +74,46 @@ export function Footer() {
             <h3 className="text-xl font-bold text-white mb-1">Stay Updated</h3>
             <p className="text-sm text-gray-400">Get the latest updates on advanced materials and innovation.</p>
           </div>
-          <form className="flex gap-2 max-w-sm w-full" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-2.5 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#17A2B8]"
-            />
-            <button
-              type="submit"
-              className="px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
+          <div className="max-w-sm w-full">
+            <form className="flex gap-2" onSubmit={handleSubscribe}>
+              {/* Honeypot field to block bots */}
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                className="hidden"
+                tabIndex={-1}
+                autoComplete="off"
+              />
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="flex-1 px-4 py-2.5 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#17A2B8]"
+              />
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors disabled:opacity-50"
+              >
+                {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+              </button>
+            </form>
+            {message && (
+              <p className={`text-xs mt-2 ${status === 'success' ? 'text-teal-400' : 'text-red-400'}`}>
+                {message}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           {/* Brand column */}
           <div className="col-span-2">
             <Link href="/" className="inline-block mb-4">
@@ -63,9 +123,18 @@ export function Footer() {
               Advance Material Pvt. Ltd — delivering precision-engineered materials to industries worldwide.
             </p>
             <div className="space-y-2 text-sm text-gray-400">
-              <div className="flex items-center gap-2"><Phone size={14} className="text-[#17A2B8]" /><span>+91 XXX XXX XXXX</span></div>
-              <div className="flex items-center gap-2"><Mail size={14} className="text-[#17A2B8]" /><span>info@vamvaltrix.com</span></div>
-              <div className="flex items-center gap-2"><MapPin size={14} className="text-[#17A2B8]" /><span>India</span></div>
+              <div className="flex items-center gap-2">
+                <Phone size={14} className="text-[#17A2B8]" />
+                <a href="tel:+912249768900" className="hover:text-white transition-colors">+91 22 4976 8900</a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail size={14} className="text-[#17A2B8]" />
+                <a href="mailto:info@vamvaltrix.com" className="hover:text-white transition-colors">info@vamvaltrix.com</a>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin size={14} className="text-[#17A2B8]" />
+                <span>India</span>
+              </div>
             </div>
           </div>
 
@@ -95,12 +164,12 @@ export function Footer() {
           </p>
           <div className="flex gap-3">
             {[
-              { icon: Facebook,  label: 'Facebook'  },
-              { icon: Twitter,   label: 'Twitter'   },
-              { icon: Linkedin,  label: 'LinkedIn'  },
-              { icon: Instagram, label: 'Instagram' },
-            ].map(({ icon: Icon, label }) => (
-              <a key={label} href="#" aria-label={label}
+              { icon: Facebook,  label: 'Facebook',  href: 'https://facebook.com/vamvaltrix' },
+              { icon: Twitter,   label: 'Twitter',   href: 'https://twitter.com/vamvaltrix' },
+              { icon: Linkedin,  label: 'LinkedIn',  href: 'https://linkedin.com/company/vamvaltrix' },
+              { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/vamvaltrix' },
+            ].map(({ icon: Icon, label, href }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
                 className="w-8 h-8 rounded-lg bg-white/5 hover:bg-[#17A2B8] flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200">
                 <Icon size={15} />
               </a>

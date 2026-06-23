@@ -8,26 +8,22 @@ import { api } from '@/lib/api';
 
 const carouselSlides = [
   {
-    bg: 'from-[#2C3E50] to-[#17A2B8]',
-    image: '/placeholder.jpg',
+    image: '/galvanizing.png',
     label: 'Composite Materials',
     caption: 'Carbon fiber, glass fiber & Kevlar composites for aerospace and automotive.',
   },
   {
-    bg: 'from-[#17A2B8] to-[#0D7A8C]',
-    image: '/placeholder.jpg',
+    image: '/lab.png',
     label: 'Advanced Alloys',
     caption: 'Titanium, nickel-based & aluminum alloys engineered for extreme conditions.',
   },
   {
-    bg: 'from-[#0D7A8C] to-[#2C3E50]',
-    image: '/placeholder.jpg',
+    image: '/galvanizing.png',
     label: 'Protective Coatings',
     caption: 'Anti-corrosion, thermal barrier & wear-resistant industrial coatings.',
   },
   {
-    bg: 'from-[#2C3E50] to-[#138899]',
-    image: '/placeholder.jpg',
+    image: '/lab.png',
     label: 'Specialty Polymers',
     caption: 'High-performance polymers & sustainable materials for industrial use.',
   },
@@ -150,12 +146,12 @@ export function HeroSection() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -60 }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className={`absolute inset-0 bg-gradient-to-br ${carouselSlides[current].bg}`}
+                  className="absolute inset-0 bg-black"
                 >
                   <img
                     src={carouselSlides[current].image}
                     alt={carouselSlides[current].label}
-                    className="w-full h-full object-cover mix-blend-overlay opacity-50"
+                    className="w-full h-full object-cover"
                   />
                   {/* Slide content */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8">

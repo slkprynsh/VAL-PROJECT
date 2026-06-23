@@ -58,7 +58,7 @@ export default function AboutPage() {
 
       {/* Team */}
       <Section className="bg-white">
-        <SectionTitle subtitle="OUR TEAM" title="Meet the Leaders" description="The operators, engineers, and sourcing specialists who built VAM VALTRIX" />
+        <SectionTitle subtitle="OUR TEAM" title="Meet the Leaders" description="The operators, engineers, and sourcing specialists behind VAM VALTRIX (Illustrative profiles)" />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
           {teamMembers.map((member, idx) => (
             <Reveal key={member.name} delay={idx * 0.1} direction="up">

@@ -7,16 +7,60 @@ import { Reveal } from '@/components/animations/reveal';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { api } from '@/lib/api';
 
+declare global {
+  interface Window {
+    grecaptcha: any;
+  }
+}
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', company: '', message: '' });
   const [status, setStatus]     = useState<'idle'|'loading'|'success'|'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [validationError, setValidationError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError('');
+
+    // Client-side validations
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setValidationError('Please fill in all required fields.');
+      return;
+    }
+
+    if (formData.name.length > 100) {
+      setValidationError('Name must be 100 characters or less.');
+      return;
+    }
+
+    if (formData.email.length > 100) {
+      setValidationError('Email must be 100 characters or less.');
+      return;
+    }
+
+    if (formData.message.length > 5000) {
+      setValidationError('Message must be 5000 characters or less.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setValidationError('Please enter a valid email address.');
+      return;
+    }
+
     setStatus('loading');
     try {
-      await api.contact.send(formData);
+      let token = '';
+      if (typeof window !== 'undefined' && window.grecaptcha) {
+        token = await window.grecaptcha.execute(
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+          { action: 'contact' }
+        );
+      }
+
+      await api.contact.send({ ...formData, recaptchaToken: token });
       setStatus('success');
       setFormData({ name: '', email: '', company: '', message: '' });
     } catch (err) {
@@ -54,7 +98,7 @@ export default function ContactPage() {
             <SectionTitle subtitle="CONTACT INFO" title="Reach Out" className="text-left mb-2" />
             {[
               { icon: Mail,    title: 'Email',  lines: ['info@vamvaltrix.com', 'sourcing@vamvaltrix.com'] },
-              { icon: Phone,   title: 'Phone',  lines: ['+91 XXX XXX XXXX', 'Mon–Fri, 9am–6pm IST'] },
+              { icon: Phone,   title: 'Phone',  lines: ['+91 22 4976 8900', 'Mon–Fri, 9am–6pm IST'] },
               { icon: MapPin,  title: 'Office', lines: ['Advance Material Pvt. Ltd', 'India'] },
             ].map(({ icon: Icon, title, lines }, idx) => (
               <Reveal key={title} direction="left" delay={idx * 0.1}>
@@ -74,27 +118,35 @@ export default function ContactPage() {
           {/* Form */}
           <Reveal direction="right" className="lg:col-span-2">
             <motion.form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+              {validationError && (
+                <div className="mb-5 p-3.5 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100 font-medium">
+                  ⚠️ {validationError}
+                </div>
+              )}
               <div className="grid md:grid-cols-2 gap-5 mb-5">
                 <div>
                   <label className="block text-sm font-semibold text-[#2C3E50] mb-2">Full Name *</label>
-                  <input type="text" placeholder="Your name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required
+                  <input type="text" placeholder="Your name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required maxLength={100}
                     className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                  <span className="text-xs text-gray-400 block mt-1 text-right">{formData.name.length}/100</span>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-[#2C3E50] mb-2">Email *</label>
-                  <input type="email" placeholder="you@company.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required
+                  <input type="email" placeholder="you@company.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required maxLength={100}
                     className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                  <span className="text-xs text-gray-400 block mt-1 text-right">{formData.email.length}/100</span>
                 </div>
               </div>
               <div className="mb-5">
                 <label className="block text-sm font-semibold text-[#2C3E50] mb-2">Company</label>
-                <input type="text" placeholder="Your company" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                <input type="text" placeholder="Your company" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} maxLength={100}
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
               </div>
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-[#2C3E50] mb-2">What are you sourcing? *</label>
-                <textarea placeholder="Describe the material, spec, quantity, and timeline..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} required rows={5}
+                <textarea placeholder="Describe the material, spec, quantity, and timeline..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} required rows={5} maxLength={5000}
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] resize-none" />
+                <span className="text-xs text-gray-400 block mt-1 text-right">{formData.message.length}/5000</span>
               </div>
 
               {status === 'success' ? (
