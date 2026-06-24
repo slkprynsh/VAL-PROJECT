@@ -55,9 +55,23 @@ export function HeroSection() {
 
   const handleQuoteSubmit = async () => {
     if (!quoteEmail) return;
+
+    // Validate email before submitting
+    const emailRegex = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/i;
+    if (!emailRegex.test(quoteEmail.trim()) || quoteEmail.length > 254) {
+      setQuoteStatus('error');
+      return;
+    }
+    if (quoteName && quoteName.length > 100) { setQuoteStatus('error'); return; }
+    if (quoteCompany && quoteCompany.length > 100) { setQuoteStatus('error'); return; }
+    if (quoteMaterial && quoteMaterial.length > 500) { setQuoteStatus('error'); return; }
+
     setQuoteStatus('loading');
     try {
-      await api.quotes.create({ email: quoteEmail, material: quoteMaterial || 'General inquiry' });
+      await api.quotes.create({
+        email: quoteEmail.trim().toLowerCase(),
+        material: quoteMaterial || 'General inquiry',
+      });
       setQuoteStatus('success');
       setQuoteName(''); setQuoteCompany(''); setQuoteEmail(''); setQuoteMaterial('');
     } catch {

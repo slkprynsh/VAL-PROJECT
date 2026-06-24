@@ -84,8 +84,6 @@ const nextConfig = {
           { key: 'Cross-Origin-Opener-Policy',   value: 'same-origin' },
           { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
           { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
-          // Prevent IE compat mode
-          { key: 'X-UA-Compatible',              value: 'IE=edge' },
         ],
       },
       // Aggressive caching for static assets (they are content-hashed by Next.js)

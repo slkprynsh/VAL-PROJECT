@@ -13,7 +13,10 @@
  */
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+  process.env.NEXT_PUBLIC_API_URL ??
+  (process.env.NODE_ENV === 'production'
+    ? 'https://valtrix-backend-y7df.vercel.app/api/v1'  // safe production fallback
+    : 'http://localhost:5000/api/v1');                    // dev only
 
 // ── Max response size: 1 MB ────────────────────────────────────────────
 const MAX_RESPONSE_BYTES = 1_048_576;
@@ -252,6 +255,19 @@ export const api = {
 
   careers: {
     apply: (formData: FormData) => {
+      // Client-side file validation before upload
+      const resumeFile = formData.get('resume');
+      if (resumeFile instanceof File) {
+        const ALLOWED_RESUME_TYPES = ['application/pdf', 'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        const MAX_RESUME_SIZE = 5 * 1024 * 1024; // 5 MB
+        if (!ALLOWED_RESUME_TYPES.includes(resumeFile.type)) {
+          return Promise.reject(new Error('Only PDF and Word documents are accepted.'));
+        }
+        if (resumeFile.size > MAX_RESUME_SIZE) {
+          return Promise.reject(new Error('Resume must be smaller than 5 MB.'));
+        }
+      }
       const controller = new AbortController();
       setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
       return fetch(`${BASE_URL}/careers/apply`, {

@@ -35,8 +35,29 @@ export const validators = {
     if (!/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/.test(v)) {
       return 'Please enter a valid email address.';
     }
-    // Block disposable / obviously fake domains
-    const blockedDomains = ['mailinator.com', 'guerrillamail.com', 'trashmail.com', 'tempmail.com'];
+    // Block disposable / obviously fake domains (expanded list)
+    const blockedDomains = [
+      'mailinator.com', 'guerrillamail.com', 'trashmail.com', 'tempmail.com',
+      'throwam.com', 'yopmail.com', 'sharklasers.com', 'guerrillamailblock.com',
+      'grr.la', 'guerrillamail.info', 'guerrillamail.biz', 'guerrillamail.de',
+      'guerrillamail.net', 'guerrillamail.org', 'spam4.me', 'binkmail.com',
+      'bob.email', 'clrmail.com', 'dispostable.com', 'fakeinbox.com',
+      'filzmail.com', 'getnada.com', 'harakirimail.com', 'mailnull.com',
+      'maildrop.cc', 'mailnesia.com', 'mailnull.com', 'mintemail.com',
+      'mt2015.com', 'mytrashmail.com', 'no-spam.ws', 'nobulk.com',
+      'noclickemail.com', 'ownmail.net', 'pecinan.com', 'proxymail.eu',
+      'putthisinyourspamdatabase.com', 'recode.me', 'safetypost.de',
+      'shortmail.net', 'spam.la', 'spamavert.com', 'spamfree24.org',
+      'spamgourmet.com', 'spamgourmet.net', 'spamgourmet.org', 'spamoff.de',
+      'superrito.com', 'tempr.email', 'throwam.com', 'trash-mail.at',
+      'trashdevil.com', 'trashdevil.de', 'trashemail.de', 'trashmail.at',
+      'trashmail.io', 'trashmail.me', 'trashmail.net', 'trashmailer.com',
+      'trashMailer.com', 'trbvm.com', 'turual.com', 'twinmail.de',
+      'uggsrock.com', 'wegwerfadresse.de', 'wh4f.org', 'whopy.com',
+      'wpdfs.com', 'xagloo.com', 'xemaps.com', 'xents.com', 'xmaily.com',
+      'xoxy.net', 'yopmail.fr', 'yopmail.pp.ua', 'youmails.online',
+      'ypmail.webarnak.fr.eu.org', 'yuurok.com',
+    ];
     const domain = v.split('@')[1];
     if (blockedDomains.includes(domain)) return 'Please use a work email address.';
     return null;
