@@ -19,7 +19,7 @@ const threatCards = [
   {
     title: 'Surface Degradation',
     description: 'Unprotected or improperly specified materials degrade rapidly in harsh environments, compounding maintenance costs and compliance risk.',
-    image: '/placeholder.jpg',
+    image: '/surface-degradation.jpg',
     gradient: 'from-[#2C3E50] to-[#1a2e40]',
   },
 ];
