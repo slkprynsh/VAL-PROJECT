@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 import { Modal } from '@/components/ui/modal';
-import { ArrowRight, CheckCircle, Users, Globe2, Clock, Shield, Truck, Zap, BarChart3, Play, CalendarCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, CheckCircle, Clock, Shield, Truck, Zap, BarChart3, Play, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '@/lib/api';
 
 const carouselSlides = [
@@ -78,12 +78,6 @@ export function HeroSection() {
     }
   };
 
-  const achievements = [
-    { icon: CalendarCheck, value: '20+',  label: 'Years Experience' },
-    { icon: Users,         value: '500+', label: 'Clients Worldwide' },
-    { icon: Globe2,        value: '15+',  label: 'Countries Served'  },
-  ];
-
   return (
     <section className="relative pt-28 md:pt-36 pb-12 md:pb-24 bg-white overflow-hidden">
       {/* Dot pattern */}
@@ -128,19 +122,6 @@ export function HeroSection() {
               >
                 See How It Works
               </button>
-            </div>
-
-            {/* Achievements */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6 border-t border-gray-100">
-              {achievements.map(({ icon: Icon, value, label }) => (
-                <div key={label} className="text-center lg:text-left">
-                  <div className="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#E6F7FA] mb-1.5 sm:mb-2">
-                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#17A2B8]" />
-                  </div>
-                  <div className="text-xl sm:text-2xl font-bold text-[#2C3E50]">{value}</div>
-                  <div className="text-xs sm:text-sm text-[#6B7280]">{label}</div>
-                </div>
-              ))}
             </div>
           </motion.div>
 
