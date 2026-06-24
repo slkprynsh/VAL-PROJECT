@@ -82,7 +82,6 @@ export function Footer() {
       if (err instanceof DOMException && err.name === 'AbortError') {
         setMessage('Request timed out. Please try again.');
       } else {
-        // Generic message — never expose server details
         setMessage('Unable to subscribe right now. Please try again later.');
       }
     }
@@ -92,14 +91,14 @@ export function Footer() {
     <footer className="bg-[#2C3E50] text-gray-300">
       {/* Newsletter banner */}
       <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:flex md:items-center md:justify-between gap-8">
-          <div className="mb-6 md:mb-0">
-            <h3 className="text-xl font-bold text-white mb-1">Stay Updated</h3>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:flex md:items-center md:justify-between gap-8">
+          <div className="mb-5 md:mb-0">
+            <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Stay Updated</h3>
             <p className="text-sm text-gray-400">Get the latest updates on advanced materials and innovation.</p>
           </div>
           <div className="max-w-sm w-full">
             <form className="flex gap-2" onSubmit={handleSubscribe} noValidate>
-              {/* Honeypot — aria-hidden so screen readers skip it, tab-index -1 so keyboard users skip it */}
+              {/* Honeypot */}
               <div aria-hidden="true" className="absolute opacity-0 pointer-events-none h-0 overflow-hidden">
                 <input
                   type="text"
@@ -116,14 +115,14 @@ export function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="flex-1 px-4 py-2.5 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#17A2B8]"
+                className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#17A2B8]"
               />
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors disabled:opacity-50"
+                className="shrink-0 px-3 sm:px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors disabled:opacity-50 whitespace-nowrap min-h-[44px]"
               >
-                {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+                {status === 'loading' ? '...' : 'Subscribe'}
               </button>
             </form>
             {message && (
@@ -136,27 +135,27 @@ export function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand column */}
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Link href="/" className="inline-block mb-4">
-              <Image src="/valtrix-logo.png" alt="VAM VALTRIX" width={130} height={44} className="h-10 w-auto brightness-0 invert" />
+              <Image src="/valtrix-logo.png" alt="VAM VALTRIX" width={130} height={44} className="h-9 sm:h-10 w-auto brightness-0 invert" />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-5 max-w-xs">
               Advance Material Pvt. Ltd — delivering precision-engineered materials to industries worldwide.
             </p>
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center gap-2">
-                <Phone size={14} className="text-[#17A2B8]" />
+                <Phone size={14} className="text-[#17A2B8] shrink-0" />
                 <a href="tel:+912249768900" className="hover:text-white transition-colors">+91 22 4976 8900</a>
               </div>
               <div className="flex items-center gap-2">
-                <Mail size={14} className="text-[#17A2B8]" />
-                <a href="mailto:info@vamvaltrix.com" className="hover:text-white transition-colors">info@vamvaltrix.com</a>
+                <Mail size={14} className="text-[#17A2B8] shrink-0" />
+                <a href="mailto:info@vamvaltrix.com" className="hover:text-white transition-colors break-all">info@vamvaltrix.com</a>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin size={14} className="text-[#17A2B8]" />
+                <MapPin size={14} className="text-[#17A2B8] shrink-0" />
                 <span>India</span>
               </div>
             </div>
@@ -165,11 +164,11 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="mb-4 text-sm font-semibold text-white uppercase tracking-wider">{category}</h4>
-              <ul className="space-y-2.5">
+              <h4 className="mb-3 sm:mb-4 text-sm font-semibold text-white uppercase tracking-wider">{category}</h4>
+              <ul className="space-y-2 sm:space-y-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-sm text-gray-400 hover:text-[#17A2B8] transition-colors">
+                    <Link href={link.href} className="text-sm text-gray-400 hover:text-[#17A2B8] transition-colors inline-block py-0.5">
                       {link.label}
                     </Link>
                   </li>
@@ -182,8 +181,8 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-gray-500 text-center sm:text-left">
             &copy; {new Date().getFullYear()} VAM VALTRIX – Advance Material Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex gap-3">
@@ -194,7 +193,7 @@ export function Footer() {
               { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/vamvaltrix' },
             ].map(({ icon: Icon, label, href }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                className="w-8 h-8 rounded-lg bg-white/5 hover:bg-[#17A2B8] flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200">
+                className="w-10 h-10 rounded-lg bg-white/5 hover:bg-[#17A2B8] flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200">
                 <Icon size={15} />
               </a>
             ))}

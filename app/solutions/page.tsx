@@ -58,20 +58,20 @@ export default function SolutionsPage() {
   const activeImage    = selected ? productImages[selected] : null;
 
   return (
-    <div className="pt-20">
+    <div className="pt-16 sm:pt-20">
 
       {/* Hero */}
-      <Section className="bg-white py-20">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-6">
+      <Section className="bg-white py-12 sm:py-16 md:py-20">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto text-center px-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-5 sm:mb-6">
             <span className="w-2 h-2 rounded-full bg-[#17A2B8]" />
             <span className="text-sm font-medium text-[#2C3E50]">Our Product Range</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-[#2C3E50] mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C3E50] mb-4 sm:mb-6 leading-tight">
             One Platform. Every Material.{' '}
             <span className="gradient-text">Full Visibility.</span>
           </h1>
-          <p className="text-xl text-[#6B7280]">
+          <p className="text-base sm:text-xl text-[#6B7280]">
             Click any product below to explore full details, specifications, and applications.
           </p>
         </motion.div>
@@ -79,46 +79,49 @@ export default function SolutionsPage() {
 
       {/* Main: List + Detail */}
       <Section className="bg-[#F8FAFB]" id="solutions">
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
 
           {/* ── Left: Product List ── */}
-          <div className="lg:w-80 shrink-0 space-y-3">
-            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-4">Select a Product</p>
-            {solutions.map((solution, idx) => {
-              const Icon = solution.icon;
-              const isActive = selected === solution.id;
-              return (
-                <Reveal key={solution.id} delay={idx * 0.07}>
-                  <motion.button
-                    whileHover={{ x: 4 }}
-                    onClick={() => setSelected(isActive ? null : solution.id)}
-                    className={`w-full text-left rounded-2xl border-2 transition-all duration-200 overflow-hidden group ${
-                      isActive
-                        ? 'border-[#17A2B8] bg-white shadow-md'
-                        : 'border-gray-100 bg-white hover:border-[#D1F2F7] hover:shadow-sm'
-                    }`}
-                  >
-                    {/* Card image strip */}
-                    <div className={`relative h-28 overflow-hidden ${isActive ? 'bg-gradient-to-br from-[#17A2B8] to-[#0D7A8C]' : 'bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]'}`}>
-                      <img src={productImages[solution.id]} alt={solution.title} className="w-full h-full object-cover mix-blend-overlay opacity-40" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isActive ? 'bg-white' : 'bg-white/20'}`}>
-                          <Icon size={22} className={isActive ? 'text-[#17A2B8]' : 'text-white'} />
+          <div className="lg:w-80 shrink-0">
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-3 sm:mb-4">Select a Product</p>
+            {/* Mobile: horizontal scroll row; Desktop: vertical stack */}
+            <div className="flex lg:flex-col gap-3 overflow-x-auto pb-2 lg:pb-0 lg:space-y-0 snap-x snap-mandatory lg:snap-none">
+              {solutions.map((solution, idx) => {
+                const Icon = solution.icon;
+                const isActive = selected === solution.id;
+                return (
+                  <Reveal key={solution.id} delay={idx * 0.07}>
+                    <motion.button
+                      whileHover={{ x: 4 }}
+                      onClick={() => setSelected(isActive ? null : solution.id)}
+                      className={`w-64 lg:w-full shrink-0 snap-start text-left rounded-2xl border-2 transition-all duration-200 overflow-hidden group ${
+                        isActive
+                          ? 'border-[#17A2B8] bg-white shadow-md'
+                          : 'border-gray-100 bg-white hover:border-[#D1F2F7] hover:shadow-sm'
+                      }`}
+                    >
+                      {/* Card image strip */}
+                      <div className={`relative h-24 sm:h-28 overflow-hidden ${isActive ? 'bg-gradient-to-br from-[#17A2B8] to-[#0D7A8C]' : 'bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]'}`}>
+                        <img src={productImages[solution.id]} alt={solution.title} className="w-full h-full object-cover mix-blend-overlay opacity-40" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${isActive ? 'bg-white' : 'bg-white/20'}`}>
+                            <Icon size={20} className={isActive ? 'text-[#17A2B8]' : 'text-white'} />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/* Card text */}
-                    <div className="p-4 flex items-center justify-between">
-                      <div>
-                        <p className={`font-semibold text-sm ${isActive ? 'text-[#17A2B8]' : 'text-[#2C3E50]'}`}>{solution.title}</p>
-                        <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-1">{solution.description}</p>
+                      {/* Card text */}
+                      <div className="p-3 sm:p-4 flex items-center justify-between">
+                        <div className="min-w-0 flex-1">
+                          <p className={`font-semibold text-sm ${isActive ? 'text-[#17A2B8]' : 'text-[#2C3E50]'}`}>{solution.title}</p>
+                          <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-1">{solution.description}</p>
+                        </div>
+                        <ArrowRight size={16} className={`shrink-0 ml-2 transition-transform duration-200 ${isActive ? 'text-[#17A2B8] translate-x-1' : 'text-gray-300 group-hover:text-[#17A2B8]'}`} />
                       </div>
-                      <ArrowRight size={16} className={`shrink-0 ml-2 transition-transform duration-200 ${isActive ? 'text-[#17A2B8] translate-x-1' : 'text-gray-300 group-hover:text-[#17A2B8]'}`} />
-                    </div>
-                  </motion.button>
-                </Reveal>
-              );
-            })}
+                    </motion.button>
+                  </Reveal>
+                );
+              })}
+            </div>
           </div>
 
           {/* ── Right: Detail Panel ── */}
@@ -130,13 +133,13 @@ export default function SolutionsPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="h-full min-h-[400px] rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-12"
+                  className="h-full min-h-[300px] sm:min-h-[400px] rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center p-8 sm:p-12"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-[#E6F7FA] flex items-center justify-center mb-4">
-                    <ArrowLeft size={24} className="text-[#17A2B8]" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#E6F7FA] flex items-center justify-center mb-4">
+                    <ArrowLeft size={22} className="text-[#17A2B8]" />
                   </div>
-                  <p className="text-lg font-semibold text-[#2C3E50] mb-2">Select a product</p>
-                  <p className="text-sm text-[#6B7280]">Click any product card on the left to view full details, specs, and applications.</p>
+                  <p className="text-base sm:text-lg font-semibold text-[#2C3E50] mb-2">Select a product</p>
+                  <p className="text-sm text-[#6B7280]">Click any product card to view full details, specs, and applications.</p>
                 </motion.div>
               ) : (
                 <motion.div
@@ -151,19 +154,19 @@ export default function SolutionsPage() {
                   <div className="bg-white rounded-2xl border-2 border-[#D1F2F7] overflow-hidden shadow-sm">
                     <div className="grid md:grid-cols-2">
                       {/* Left: Product info */}
-                      <div className="p-8 border-b md:border-b-0 md:border-r border-[#E6F7FA]">
-                        <div className="flex items-center gap-3 mb-5">
+                      <div className="p-5 sm:p-8 border-b md:border-b-0 md:border-r border-[#E6F7FA]">
+                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
                           {activeSolution && (
-                            <div className="w-12 h-12 rounded-xl bg-[#E6F7FA] flex items-center justify-center shrink-0">
-                              <activeSolution.icon size={22} className="text-[#17A2B8]" />
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#E6F7FA] flex items-center justify-center shrink-0">
+                              <activeSolution.icon size={20} className="text-[#17A2B8]" />
                             </div>
                           )}
                           <div>
                             <p className="text-xs font-semibold text-[#17A2B8] uppercase tracking-wider">Product Details</p>
-                            <h2 className="text-xl font-bold text-[#2C3E50]">{activeSolution?.title}</h2>
+                            <h2 className="text-lg sm:text-xl font-bold text-[#2C3E50]">{activeSolution?.title}</h2>
                           </div>
                         </div>
-                        <p className="text-[#6B7280] text-sm leading-relaxed mb-5">{activeDetails?.overview}</p>
+                        <p className="text-[#6B7280] text-sm leading-relaxed mb-4 sm:mb-5">{activeDetails?.overview}</p>
                         <div className="space-y-2">
                           {activeSolution?.features.map((f) => (
                             <div key={f} className="flex items-center gap-2">
@@ -174,9 +177,9 @@ export default function SolutionsPage() {
                         </div>
                       </div>
                       {/* Right: Photo */}
-                      <div className="relative h-56 md:h-auto bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]">
+                      <div className="relative h-48 sm:h-56 md:h-auto bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]">
                         <img src={activeImage!} alt={activeSolution?.title} className="w-full h-full object-cover mix-blend-overlay opacity-50" />
-                        <div className="absolute inset-0 flex items-end p-5">
+                        <div className="absolute inset-0 flex items-end p-4 sm:p-5">
                           <span className="text-xs font-semibold text-white/70 uppercase tracking-widest">Product Photo</span>
                         </div>
                       </div>
@@ -187,15 +190,15 @@ export default function SolutionsPage() {
                   <div className="bg-white rounded-2xl border-2 border-[#D1F2F7] overflow-hidden shadow-sm">
                     <div className="grid md:grid-cols-2">
                       {/* Left: Photo */}
-                      <div className="relative h-56 md:h-auto bg-gradient-to-br from-[#17A2B8] to-[#0D7A8C] order-2 md:order-1">
+                      <div className="relative h-48 sm:h-56 md:h-auto bg-gradient-to-br from-[#17A2B8] to-[#0D7A8C] order-2 md:order-1">
                         <img src={activeImage!} alt="Application" className="w-full h-full object-cover mix-blend-overlay opacity-40" />
-                        <div className="absolute inset-0 flex items-end p-5">
+                        <div className="absolute inset-0 flex items-end p-4 sm:p-5">
                           <span className="text-xs font-semibold text-white/70 uppercase tracking-widest">Application Photo</span>
                         </div>
                       </div>
                       {/* Right: Specs + Applications */}
-                      <div className="p-8 order-1 md:order-2 border-b md:border-b-0 md:border-l border-[#E6F7FA]">
-                        <div className="mb-6">
+                      <div className="p-5 sm:p-8 order-1 md:order-2 border-b md:border-b-0 md:border-l border-[#E6F7FA]">
+                        <div className="mb-5 sm:mb-6">
                           <p className="text-xs font-semibold text-[#17A2B8] uppercase tracking-wider mb-3">Specifications</p>
                           <div className="space-y-2">
                             {activeDetails?.specs.map((spec) => (
@@ -216,7 +219,7 @@ export default function SolutionsPage() {
                             ))}
                           </div>
                         </div>
-                        <Link href="/contact" className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors">
+                        <Link href="/contact" className="mt-5 sm:mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#17A2B8] text-white text-sm font-semibold hover:bg-[#0D7A8C] transition-colors min-h-[44px]">
                           Request a Quote <ArrowRight size={15} />
                         </Link>
                       </div>
@@ -232,7 +235,7 @@ export default function SolutionsPage() {
       {/* Results */}
       <Section className="bg-white">
         <SectionTitle subtitle="PROVEN RESULTS" title="What You Can Expect" description="Numbers from manufacturers already running on VAM VALTRIX" />
-        <div className="mt-12 space-y-4 max-w-3xl mx-auto">
+        <div className="mt-8 sm:mt-12 space-y-4 max-w-3xl mx-auto">
           {[
             { benefit: '38% Average Lead Time Reduction',            description: 'Procurement cycles cut from weeks to days across metals, polymers, and coatings.' },
             { benefit: '97.4% On-Time Fulfillment Rate',             description: 'Earned across 99,000+ orders — not a marketing number.' },
@@ -240,12 +243,12 @@ export default function SolutionsPage() {
             { benefit: '<4 hrs Average Response on Custom Requests', description: 'When you need something outside the catalog, our sourcing team moves fast.' },
           ].map((item, idx) => (
             <Reveal key={item.benefit} delay={idx * 0.1} direction="left">
-              <motion.div whileHover={{ x: 6 }} className="flex gap-4 p-6 bg-white rounded-2xl border-2 border-gray-100 hover:border-[#D1F2F7] hover:shadow-sm transition-all">
-                <div className="w-12 h-12 flex items-center justify-center bg-[#E6F7FA] rounded-xl shrink-0">
-                  <span className="text-[#17A2B8] font-bold text-lg">{idx + 1}</span>
+              <motion.div whileHover={{ x: 6 }} className="flex gap-3 sm:gap-4 p-4 sm:p-6 bg-white rounded-2xl border-2 border-gray-100 hover:border-[#D1F2F7] hover:shadow-sm transition-all">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-[#E6F7FA] rounded-xl shrink-0">
+                  <span className="text-[#17A2B8] font-bold text-base sm:text-lg">{idx + 1}</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#2C3E50] mb-1">{item.benefit}</h3>
+                  <h3 className="font-bold text-[#2C3E50] mb-1 text-sm sm:text-base">{item.benefit}</h3>
                   <p className="text-[#6B7280] text-sm">{item.description}</p>
                 </div>
               </motion.div>
@@ -255,12 +258,12 @@ export default function SolutionsPage() {
       </Section>
 
       {/* CTA */}
-      <Section className="bg-[#2C3E50] text-white text-center py-20">
-        <h2 className="text-4xl font-bold mb-4">Get Started With a No-Commitment Sourcing Request</h2>
-        <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+      <Section className="bg-[#2C3E50] text-white text-center py-12 sm:py-16 md:py-20">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight">Get Started With a No-Commitment Sourcing Request</h2>
+        <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto">
           Tell us what you need. We&apos;ll show you what we can source, at what price, and how fast — before you commit to anything.
         </p>
-        <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors">
+        <Link href="/contact" className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors min-h-[48px]">
           Request a Quote <ArrowRight size={18} />
         </Link>
       </Section>

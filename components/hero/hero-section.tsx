@@ -56,7 +56,6 @@ export function HeroSection() {
   const handleQuoteSubmit = async () => {
     if (!quoteEmail) return;
 
-    // Validate email before submitting
     const emailRegex = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/i;
     if (!emailRegex.test(quoteEmail.trim()) || quoteEmail.length > 254) {
       setQuoteStatus('error');
@@ -86,60 +85,60 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="relative pt-36 pb-24 bg-white overflow-hidden">
+    <section className="relative pt-28 md:pt-36 pb-12 md:pb-24 bg-white overflow-hidden">
       {/* Dot pattern */}
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #17A2B8 1px, transparent 0)', backgroundSize: '36px 36px' }}
       />
       {/* Teal glow */}
-      <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-[#D1F2F7] opacity-40 blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -right-32 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-[#D1F2F7] opacity-40 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
 
           {/* ── Left: Content ── */}
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#D1F2F7] shadow-sm mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border border-[#D1F2F7] shadow-sm mb-4 sm:mb-6">
               <span className="w-2 h-2 rounded-full bg-[#17A2B8] animate-pulse" />
-              <span className="text-sm font-medium text-[#2C3E50]">Leading Advanced Materials Manufacturer</span>
+              <span className="text-xs sm:text-sm font-medium text-[#2C3E50]">Leading Advanced Materials Manufacturer</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#2C3E50] leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#2C3E50] leading-tight mb-4 sm:mb-6">
               Advanced Materials for{' '}
               <span className="gradient-text block mt-1">Tomorrow's Industries</span>
             </h1>
 
-            <p className="text-lg text-[#6B7280] mb-8 leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-[#6B7280] mb-6 sm:mb-8 leading-relaxed max-w-xl">
               VAM VALTRIX delivers cutting-edge material solutions — metals, polymers, composites, and specialty coatings — engineered for performance, durability, and innovation across diverse industrial applications.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-12">
               <button
                 onClick={() => setIsQuoteOpen(true)}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-all duration-200 shadow-sm group"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-all duration-200 shadow-sm group min-h-[44px]"
               >
                 Request a Quote
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
               <button
                 onClick={() => setIsDemoOpen(true)}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border-2 border-[#17A2B8] text-[#17A2B8] font-semibold hover:bg-[#17A2B8] hover:text-white transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border-2 border-[#17A2B8] text-[#17A2B8] font-semibold hover:bg-[#17A2B8] hover:text-white transition-all duration-200 min-h-[44px]"
               >
                 See How It Works
               </button>
             </div>
 
             {/* Achievements */}
-            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100">
+            <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6 border-t border-gray-100">
               {achievements.map(({ icon: Icon, value, label }) => (
                 <div key={label} className="text-center lg:text-left">
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#E6F7FA] mb-2">
-                    <Icon className="w-5 h-5 text-[#17A2B8]" />
+                  <div className="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#E6F7FA] mb-1.5 sm:mb-2">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#17A2B8]" />
                   </div>
-                  <div className="text-2xl font-bold text-[#2C3E50]">{value}</div>
-                  <div className="text-sm text-[#6B7280]">{label}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-[#2C3E50]">{value}</div>
+                  <div className="text-xs sm:text-sm text-[#6B7280]">{label}</div>
                 </div>
               ))}
             </div>
@@ -149,7 +148,7 @@ export function HeroSection() {
           <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
 
             <div
-              className="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer h-[460px] select-none"
+              className="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer h-[280px] sm:h-[360px] md:h-[420px] lg:h-[460px] select-none"
               onClick={scrollToSolutions}
               title="Click to explore our solutions"
             >
@@ -173,12 +172,12 @@ export function HeroSection() {
                     }}
                   />
                   {/* Slide content */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-8">
-                    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5">
+                  <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8">
+                    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-5">
                       <p className="text-xs font-semibold uppercase tracking-widest text-[#D1F2F7] mb-1">Our Services</p>
-                      <h3 className="text-2xl font-bold text-white mb-2">{carouselSlides[current].label}</h3>
-                      <p className="text-sm text-white/75">{carouselSlides[current].caption}</p>
-                      <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#D1F2F7]">
+                      <h3 className="text-lg sm:text-2xl font-bold text-white mb-1 sm:mb-2">{carouselSlides[current].label}</h3>
+                      <p className="text-xs sm:text-sm text-white/75 hidden sm:block">{carouselSlides[current].caption}</p>
+                      <div className="mt-2 sm:mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#D1F2F7]">
                         <span>Click to explore all solutions</span>
                         <ArrowRight size={13} />
                       </div>
@@ -190,13 +189,15 @@ export function HeroSection() {
               {/* Prev / Next */}
               <button
                 onClick={(e) => { e.stopPropagation(); prev(); }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all z-10"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all z-10"
+                aria-label="Previous slide"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); next(); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all z-10"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm flex items-center justify-center text-white transition-all z-10"
+                aria-label="Next slide"
               >
                 <ChevronRight size={18} />
               </button>
@@ -208,6 +209,7 @@ export function HeroSection() {
                     key={i}
                     onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
                     className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`}
+                    aria-label={`Go to slide ${i + 1}`}
                   />
                 ))}
               </div>
@@ -225,17 +227,17 @@ export function HeroSection() {
 
       {/* ── Quote Modal ── */}
       <Modal isOpen={isQuoteOpen} onClose={() => setIsQuoteOpen(false)} title="Get Started with VAM VALTRIX">
-        <div className="space-y-5">
-          <div className="grid grid-cols-3 gap-3">
+        <div className="space-y-4 sm:space-y-5">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {[
               { icon: Clock,  label: '24hr Response',   sub: 'Quote turnaround'  },
               { icon: Shield, label: 'Verified Sources', sub: '320+ suppliers'   },
               { icon: Truck,  label: 'On-Time',          sub: '97.4% delivery'   },
             ].map(({ icon: Icon, label, sub }) => (
-              <div key={label} className="text-center p-3 bg-[#E6F7FA] rounded-xl border border-[#D1F2F7]">
-                <Icon className="w-5 h-5 text-[#17A2B8] mx-auto mb-1" />
-                <p className="text-xs font-semibold text-[#2C3E50]">{label}</p>
-                <p className="text-xs text-[#6B7280]">{sub}</p>
+              <div key={label} className="text-center p-2 sm:p-3 bg-[#E6F7FA] rounded-xl border border-[#D1F2F7]">
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#17A2B8] mx-auto mb-1" />
+                <p className="text-xs font-semibold text-[#2C3E50] leading-tight">{label}</p>
+                <p className="text-xs text-[#6B7280] hidden sm:block">{sub}</p>
               </div>
             ))}
           </div>
@@ -258,19 +260,19 @@ export function HeroSection() {
           ) : (
             <>
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input type="text" placeholder="Your name" value={quoteName} onChange={(e) => setQuoteName(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                    className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8] min-h-[44px]" />
                   <input type="text" placeholder="Company" value={quoteCompany} onChange={(e) => setQuoteCompany(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                    className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8] min-h-[44px]" />
                 </div>
                 <input type="email" placeholder="Work email" value={quoteEmail} onChange={(e) => setQuoteEmail(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8] min-h-[44px]" />
                 <input type="text" placeholder="Material needed (e.g. Titanium Grade 5, HDPE sheet...)" value={quoteMaterial} onChange={(e) => setQuoteMaterial(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8]" />
+                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17A2B8] min-h-[44px]" />
               </div>
               <button onClick={handleQuoteSubmit} disabled={quoteStatus === 'loading'}
-                className="w-full py-3 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors disabled:opacity-60">
+                className="w-full py-3.5 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors disabled:opacity-60 min-h-[44px]">
                 {quoteStatus === 'loading' ? 'Submitting...' : 'Get My Quote →'}
               </button>
               {quoteStatus === 'error' && <p className="text-center text-xs text-red-600">Something went wrong. Please try again.</p>}
@@ -281,14 +283,14 @@ export function HeroSection() {
 
       {/* ── Demo Modal ── */}
       <Modal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} title="See How VAM VALTRIX Works">
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           <p className="text-sm text-[#6B7280]">
             See how VAM VALTRIX cuts procurement cycles from weeks to days — without sacrificing traceability or spec compliance.
           </p>
           <div className="aspect-video bg-gradient-to-br from-[#2C3E50] to-[#17A2B8] rounded-xl flex items-center justify-center">
             <div className="text-center">
-              <button className="w-16 h-16 mx-auto mb-3 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
-                <Play className="w-6 h-6 text-[#17A2B8] ml-1" />
+              <button className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 text-[#17A2B8] ml-1" />
               </button>
               <p className="text-white/80 text-sm">3-minute product walkthrough</p>
             </div>
@@ -313,7 +315,7 @@ export function HeroSection() {
             ))}
           </div>
           <button onClick={() => { setIsDemoOpen(false); setIsQuoteOpen(true); }}
-            className="w-full py-3 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors">
+            className="w-full py-3.5 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors min-h-[44px]">
             Get Started Now →
           </button>
         </div>

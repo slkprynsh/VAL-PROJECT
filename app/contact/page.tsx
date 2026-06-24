@@ -22,7 +22,6 @@ export default function ContactPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-    // Clear field error on change
     if (fieldErrors[field]) {
       setFieldErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
     }
@@ -32,13 +31,11 @@ export default function ContactPage() {
     e.preventDefault();
     setErrorMsg('');
 
-    // Honeypot check — silently reject bots
     if (honeypot) {
       setStatus('success');
       return;
     }
 
-    // Validate all fields
     const errors = validateContactForm(formData);
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -48,7 +45,6 @@ export default function ContactPage() {
     setStatus('loading');
 
     try {
-      // Get reCAPTCHA v3 token
       const recaptchaToken = await getRecaptchaToken('contact');
 
       await api.contact.send({
@@ -63,37 +59,35 @@ export default function ContactPage() {
       setFormData({ name: '', email: '', company: '', message: '' });
       setFieldErrors({});
     } catch (err) {
-      // Only show a safe generic message — never expose internals
       setErrorMsg('Unable to send your message. Please try again or email us directly.');
       setStatus('error');
     }
   };
 
   return (
-    <div className="pt-20">
-      {/* Load reCAPTCHA only on this page — keeps other pages fast */}
+    <div className="pt-16 sm:pt-20">
       <Script
         src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ''}`}
         strategy="afterInteractive"
       />
 
       {/* Hero */}
-      <Section className="bg-white py-24">
+      <Section className="bg-white py-12 sm:py-16 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto text-center"
+          className="max-w-3xl mx-auto text-center px-4"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-5 sm:mb-6">
             <span className="w-2 h-2 rounded-full bg-[#17A2B8]" />
             <span className="text-sm font-medium text-[#2C3E50]">Get In Touch</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-[#2C3E50] mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C3E50] mb-4 sm:mb-6 leading-tight">
             Talk to Someone Who{' '}
             <span className="gradient-text">Knows Materials</span>
           </h1>
-          <p className="text-xl text-[#6B7280]">
+          <p className="text-base sm:text-xl text-[#6B7280]">
             Have a sourcing challenge? Send us the details and a VAM VALTRIX specialist will respond — usually within a few hours.
           </p>
         </motion.div>
@@ -101,10 +95,10 @@ export default function ContactPage() {
 
       {/* Contact Info + Form */}
       <Section className="bg-[#F8FAFB]">
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
 
           {/* Info */}
-          <div className="lg:col-span-1 space-y-8">
+          <div className="lg:col-span-1 space-y-6 sm:space-y-8">
             <SectionTitle subtitle="CONTACT INFO" title="Reach Out" className="text-left mb-2" />
             {[
               { icon: Mail,   title: 'Email',  lines: ['info@vamvaltrix.com', 'sourcing@vamvaltrix.com'] },
@@ -112,13 +106,13 @@ export default function ContactPage() {
               { icon: MapPin, title: 'Office', lines: ['Advance Material Pvt. Ltd', 'India'] },
             ].map(({ icon: Icon, title, lines }, idx) => (
               <Reveal key={title} direction="left" delay={idx * 0.1}>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#E6F7FA] flex items-center justify-center shrink-0">
-                    <Icon size={20} className="text-[#17A2B8]" />
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#E6F7FA] flex items-center justify-center shrink-0">
+                    <Icon size={18} className="text-[#17A2B8]" />
                   </div>
                   <div>
                     <h3 className="font-bold text-[#2C3E50] mb-1">{title}</h3>
-                    {lines.map((l) => <p key={l} className="text-[#6B7280] text-sm">{l}</p>)}
+                    {lines.map((l) => <p key={l} className="text-[#6B7280] text-sm break-all">{l}</p>)}
                   </div>
                 </div>
               </Reveal>
@@ -131,9 +125,9 @@ export default function ContactPage() {
               onSubmit={handleSubmit}
               noValidate
               autoComplete="off"
-              className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm"
+              className="bg-white rounded-2xl p-5 sm:p-8 border border-gray-100 shadow-sm"
             >
-              {/* Honeypot field — visually hidden, aria-hidden so screen readers skip it */}
+              {/* Honeypot field */}
               <div aria-hidden="true" className="absolute opacity-0 pointer-events-none h-0 overflow-hidden">
                 <input
                   type="text"
@@ -145,7 +139,7 @@ export default function ContactPage() {
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-5 mb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
                 {/* Name */}
                 <div>
                   <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-name">
@@ -161,7 +155,7 @@ export default function ContactPage() {
                     maxLength={100}
                     autoComplete="name"
                     aria-describedby={fieldErrors.name ? 'name-error' : undefined}
-                    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors ${fieldErrors.name ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors min-h-[48px] ${fieldErrors.name ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
                   />
                   {fieldErrors.name && (
                     <p id="name-error" role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.name}</p>
@@ -184,7 +178,7 @@ export default function ContactPage() {
                     maxLength={254}
                     autoComplete="email"
                     aria-describedby={fieldErrors.email ? 'email-error' : undefined}
-                    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors ${fieldErrors.email ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                    className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors min-h-[48px] ${fieldErrors.email ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
                   />
                   {fieldErrors.email && (
                     <p id="email-error" role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>
@@ -194,7 +188,7 @@ export default function ContactPage() {
               </div>
 
               {/* Company */}
-              <div className="mb-5">
+              <div className="mb-4 sm:mb-5">
                 <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-company">
                   Company
                 </label>
@@ -206,7 +200,7 @@ export default function ContactPage() {
                   onChange={handleChange('company')}
                   maxLength={100}
                   autoComplete="organization"
-                  className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors ${fieldErrors.company ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                  className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#17A2B8] transition-colors min-h-[48px] ${fieldErrors.company ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
                 />
                 {fieldErrors.company && (
                   <p role="alert" className="text-xs text-red-600 mt-1">{fieldErrors.company}</p>
@@ -214,7 +208,7 @@ export default function ContactPage() {
               </div>
 
               {/* Message */}
-              <div className="mb-6">
+              <div className="mb-5 sm:mb-6">
                 <label className="block text-sm font-semibold text-[#2C3E50] mb-2" htmlFor="contact-message">
                   What are you sourcing? <span className="text-red-500">*</span>
                 </label>
@@ -247,7 +241,7 @@ export default function ContactPage() {
                     type="submit"
                     disabled={status === 'loading'}
                     aria-busy={status === 'loading'}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#17A2B8] hover:bg-[#0D7A8C] disabled:opacity-60 text-white rounded-lg font-semibold transition-colors"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#17A2B8] hover:bg-[#0D7A8C] disabled:opacity-60 text-white rounded-lg font-semibold transition-colors min-h-[52px]"
                   >
                     {status === 'loading' ? 'Sending…' : <><span>Send Message</span><Send size={18} /></>}
                   </motion.button>
@@ -272,7 +266,7 @@ export default function ContactPage() {
       {/* FAQ */}
       <Section className="bg-white">
         <SectionTitle subtitle="FREQUENTLY ASKED" title="Common Questions" />
-        <div className="mt-12 max-w-3xl mx-auto space-y-3">
+        <div className="mt-8 sm:mt-12 max-w-3xl mx-auto space-y-3">
           {[
             { q: "How quickly can VAM VALTRIX source a material that isn't in your current network?", a: "For most specialty materials, we can identify and qualify a new supplier within 24–72 hours. Our supplier network team handles outreach, cert verification, and onboarding so you don't have to." },
             { q: 'What certifications and compliance documents come standard with each order?', a: 'Every order includes the relevant mill certificates, material test reports, and compliance documentation (REACH, RoHS, DFARS where applicable). You receive these before shipment, not after.' },
@@ -280,12 +274,12 @@ export default function ContactPage() {
             { q: 'Can VAM VALTRIX handle multi-site distribution for national or global manufacturers?', a: 'Absolutely. Multi-site fulfillment is one of our core capabilities — split shipments, site-specific delivery windows, and unified invoicing across all locations under a single account.' },
           ].map((faq, idx) => (
             <Reveal key={idx} delay={idx * 0.1}>
-              <details className="group border-2 border-gray-100 hover:border-[#D1F2F7] rounded-xl p-6 transition-colors cursor-pointer">
-                <summary className="flex items-center justify-between font-semibold text-[#2C3E50] list-none">
+              <details className="group border-2 border-gray-100 hover:border-[#D1F2F7] rounded-xl p-4 sm:p-6 transition-colors cursor-pointer">
+                <summary className="flex items-center justify-between font-semibold text-[#2C3E50] list-none text-sm sm:text-base">
                   {faq.q}
                   <span className="ml-4 w-6 h-6 rounded-full bg-[#E6F7FA] flex items-center justify-center text-[#17A2B8] text-xs shrink-0 group-open:rotate-180 transition-transform">▼</span>
                 </summary>
-                <p className="mt-4 text-[#6B7280] text-sm leading-relaxed">{faq.a}</p>
+                <p className="mt-3 sm:mt-4 text-[#6B7280] text-sm leading-relaxed">{faq.a}</p>
               </details>
             </Reveal>
           ))}
@@ -293,15 +287,15 @@ export default function ContactPage() {
       </Section>
 
       {/* CTA */}
-      <Section className="bg-[#2C3E50] text-white text-center py-20">
-        <h2 className="text-4xl font-bold mb-4">Start Your First Sourcing Request</h2>
-        <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+      <Section className="bg-[#2C3E50] text-white text-center py-12 sm:py-16 md:py-20">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight">Start Your First Sourcing Request</h2>
+        <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto">
           Tell us what you need. A VAM VALTRIX sourcing specialist will follow up with options, pricing, and lead times — usually within the same business day.
         </p>
         <a
           href="#"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors"
+          className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg bg-[#17A2B8] text-white font-semibold hover:bg-[#0D7A8C] transition-colors min-h-[48px]"
         >
           Request a Quote →
         </a>

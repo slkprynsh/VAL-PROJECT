@@ -26,18 +26,18 @@ const threatCards = [
 
 export function TestimonialsSection() {
   return (
-    <section className="bg-white py-20">
+    <section className="bg-white py-12 sm:py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading row */}
-        <div className="grid md:grid-cols-2 gap-10 items-center mb-14">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center mb-10 md:mb-14">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2C3E50] leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#2C3E50] leading-tight">
               Material Failure is an{' '}
               <span className="text-[#17A2B8]">Economic Threat.</span>
             </h2>
@@ -48,7 +48,7 @@ export function TestimonialsSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <p className="text-[#6B7280] leading-relaxed text-lg">
+            <p className="text-[#6B7280] leading-relaxed text-base sm:text-lg">
               Equipment downtime directly impacts the bottom line. Material failures in industrial
               environments cascade into production delays, compliance violations, and lost revenue.
               Valtrix eliminates this risk at the source.
@@ -57,7 +57,7 @@ export function TestimonialsSection() {
         </div>
 
         {/* Threat cards */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
           {threatCards.map((card, idx) => (
             <Reveal key={card.title} delay={idx * 0.1}>
               <motion.div
@@ -66,7 +66,7 @@ export function TestimonialsSection() {
                 className="rounded-2xl overflow-hidden border border-gray-100 hover:border-[#D1F2F7] hover:shadow-md transition-all duration-300 group"
               >
                 {/* Gradient image area */}
-                <div className={`relative h-48 bg-gradient-to-br ${card.gradient} overflow-hidden`}>
+                <div className={`relative h-44 sm:h-48 bg-gradient-to-br ${card.gradient} overflow-hidden`}>
                   <img
                     src={card.image}
                     alt={card.title}
@@ -83,7 +83,7 @@ export function TestimonialsSection() {
                 </div>
 
                 {/* Content */}
-                <div className="p-5 bg-white">
+                <div className="p-4 sm:p-5 bg-white">
                   <h3 className="font-bold text-[#2C3E50] mb-2 group-hover:text-[#17A2B8] transition-colors">
                     {card.title}
                   </h3>
