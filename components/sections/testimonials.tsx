@@ -7,6 +7,7 @@ const threatCards = [
   {
     title: 'Equipment Failure',
     description: 'Substandard materials accelerate wear and cause unexpected breakdowns, resulting in costly unplanned downtime across production lines.',
+    image: '/equipment-failure.jpg',
     gradient: 'from-[#1a2e40] to-[#0D7A8C]',
   },
   {
@@ -65,10 +66,11 @@ export function TestimonialsSection() {
                 {/* Gradient image area */}
                 <div className={`relative h-48 bg-gradient-to-br ${card.gradient} overflow-hidden`}>
                   <img
-                    src="/placeholder.jpg"
+                    src={'image' in card ? card.image : '/placeholder.jpg'}
                     alt={card.title}
                     loading="lazy"
-                    className="w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
