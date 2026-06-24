@@ -153,7 +153,7 @@ export function HeroSection() {
                     alt={carouselSlides[current].label}
                     loading="eager"
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display = 'none';
                     }}
