@@ -65,7 +65,7 @@ export function SolutionsSection() {
             transition={{ duration: 0.5, delay: 0.15 }}
           >
             <Link
-              href="/impact"
+              href="/about"
               className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-[#17A2B8] hover:text-[#0D7A8C] transition-colors group"
             >
               View All Articles
@@ -129,7 +129,7 @@ export function SolutionsSection() {
 
         {/* Mobile view all */}
         <div className="text-center mt-8 md:hidden">
-          <Link href="/impact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#17A2B8]">
+          <Link href="/about" className="inline-flex items-center gap-2 text-sm font-semibold text-[#17A2B8]">
             View All Articles <ArrowRight size={15} />
           </Link>
         </div>
