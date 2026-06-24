@@ -13,7 +13,7 @@ const threatCards = [
   {
     title: 'Economic Loss',
     description: 'Supply chain failures cost global manufacturers billions annually — from line stoppages, emergency sourcing premiums, and expedited freight.',
-    image: '/placeholder.jpg',
+    image: '/economic-loss.jpg',
     gradient: 'from-[#0D7A8C] to-[#17A2B8]',
   },
   {
