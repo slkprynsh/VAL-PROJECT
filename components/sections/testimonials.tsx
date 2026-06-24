@@ -13,11 +13,13 @@ const threatCards = [
   {
     title: 'Economic Loss',
     description: 'Supply chain failures cost global manufacturers billions annually — from line stoppages, emergency sourcing premiums, and expedited freight.',
+    image: '/placeholder.jpg',
     gradient: 'from-[#0D7A8C] to-[#17A2B8]',
   },
   {
     title: 'Surface Degradation',
     description: 'Unprotected or improperly specified materials degrade rapidly in harsh environments, compounding maintenance costs and compliance risk.',
+    image: '/placeholder.jpg',
     gradient: 'from-[#2C3E50] to-[#1a2e40]',
   },
 ];
@@ -66,7 +68,7 @@ export function TestimonialsSection() {
                 {/* Gradient image area */}
                 <div className={`relative h-48 bg-gradient-to-br ${card.gradient} overflow-hidden`}>
                   <img
-                    src={'image' in card ? card.image : '/placeholder.jpg'}
+                    src={card.image}
                     alt={card.title}
                     loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
