@@ -8,26 +8,22 @@ import { api } from '@/lib/api';
 
 const carouselSlides = [
   {
-    // compositematerials.jpg — autoclave composite development facility, carbon fiber layup
     image: '/compositematerials.jpg',
     label: 'Composite Materials',
     caption: 'Carbon fiber, glass fiber & Kevlar composites for aerospace and automotive.',
   },
   {
-    // advancedalloys.jpg — alloy development trials lab, VIM furnace, microstructure analysis
     image: '/advancedalloys.jpg',
     label: 'Advanced Alloys',
     caption: 'Titanium, nickel-based & aluminum alloys engineered for extreme conditions.',
   },
   {
-    // protectivelayer.jpg — worker spray-coating steel beam, Marine/Oil & Gas/Infrastructure
     image: '/protectivelayer.jpg',
     label: 'Protective Coatings',
     caption: 'Anti-corrosion, thermal barrier & wear-resistant industrial coatings.',
   },
   {
-    // specialpolymers.jpg — lab with polymer beads, flasks, molecular display
-    image: '/specialpolymers.jpg',
+    image: '/specialtypolymers.jpg',
     label: 'Specialty Polymers',
     caption: 'High-performance polymers & sustainable materials for industrial use.',
   },
@@ -150,16 +146,17 @@ export function HeroSection() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -60 }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className="absolute inset-0 bg-black"
+                  className="absolute inset-0 bg-gradient-to-br from-[#2C3E50] to-[#17A2B8]"
                 >
                   <img
                     src={carouselSlides[current].image}
                     alt={carouselSlides[current].label}
-                    className={`w-full h-full object-cover transition-all duration-500 ${
-                      carouselSlides[current].label === 'Protective Coatings'
-                        ? 'object-top'   // frame the action — worker + cans
-                        : ''
-                    }`}
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
                   />
                   {/* Slide content */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8">

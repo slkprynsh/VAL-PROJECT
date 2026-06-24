@@ -55,6 +55,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`scroll-smooth ${inter.variable}`}>
       <head>
+        {/* Preload hero carousel images for instant display */}
+        <link rel="preload" as="image" href="/compositematerials.jpg" />
+        <link rel="preload" as="image" href="/advancedalloys.jpg" />
+        <link rel="preload" as="image" href="/protectivelayer.jpg" />
+        <link rel="preload" as="image" href="/specialtypolymers.jpg" />
+
         {/* DNS prefetch for external origins used across the site */}
         <link rel="dns-prefetch" href="https://www.google.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
