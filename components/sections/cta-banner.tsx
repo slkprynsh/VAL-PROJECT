@@ -35,12 +35,6 @@ export function CTABanner() {
             Request a Quote
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
-          <Link
-            href="/contact"
-            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-lg border-2 border-white/30 text-white font-semibold hover:bg-white/10 transition-colors duration-200 min-h-[48px]"
-          >
-            Talk to a Specialist
-          </Link>
         </div>
 
         <motion.div
