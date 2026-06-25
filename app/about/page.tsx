@@ -16,7 +16,7 @@ export default function AboutPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl mx-auto text-center px-4">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E6F7FA] border border-[#D1F2F7] mb-5 sm:mb-6">
             <span className="w-2 h-2 rounded-full bg-[#17A2B8]" />
-            <span className="text-sm font-medium text-[#2C3E50]">Advance Material Pvt. Ltd</span>
+            <span className="text-sm font-medium text-[#2C3E50]">Valtrix Advance Material Pvt. Ltd</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2C3E50] mb-4 sm:mb-6 leading-tight">
             We Source What Others{' '}

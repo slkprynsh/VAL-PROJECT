@@ -101,9 +101,9 @@ export default function ContactPage() {
           <div className="lg:col-span-1 space-y-6 sm:space-y-8">
             <SectionTitle subtitle="CONTACT INFO" title="Reach Out" className="text-left mb-2" />
             {[
-              { icon: Mail,   title: 'Email',  lines: ['info@vamvaltrix.com', 'sourcing@vamvaltrix.com'] },
-              { icon: Phone,  title: 'Phone',  lines: ['+91 22 4976 8900', 'Mon–Fri, 9am–6pm IST'] },
-              { icon: MapPin, title: 'Office', lines: ['Advance Material Pvt. Ltd', 'India'] },
+              { icon: Mail,   title: 'Email',  lines: ['info@valtrixadvance.com', 'sourcing@valtrixadvance.com'] },
+              { icon: Phone,  title: 'Phone',  lines: ['+91 98981 23983', 'Mon–Fri, 9am–6pm IST'] },
+              { icon: MapPin, title: 'Office', lines: ['318, Fortune Gateway, Chhani,', 'Vadodara - 390024, Gujarat, India'] },
             ].map(({ icon: Icon, title, lines }, idx) => (
               <Reveal key={title} direction="left" delay={idx * 0.1}>
                 <div className="flex gap-3 sm:gap-4">

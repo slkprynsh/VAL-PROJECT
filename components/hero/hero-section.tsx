@@ -222,16 +222,6 @@ export function HeroSection() {
               </div>
             ))}
           </div>
-
-          <div className="space-y-2">
-            {['No minimum order commitment', 'Spec sheet & cert verification included', 'Dedicated sourcing specialist assigned', 'Real-time order tracking from day one'].map((item) => (
-              <div key={item} className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#17A2B8] shrink-0" />
-                <span className="text-sm text-[#1A1A1A]">{item}</span>
-              </div>
-            ))}
-          </div>
-
           {quoteStatus === 'success' ? (
             <div className="text-center py-5 bg-[#E6F7FA] rounded-xl border border-[#D1F2F7]">
               <CheckCircle className="w-10 h-10 text-[#17A2B8] mx-auto mb-2" />

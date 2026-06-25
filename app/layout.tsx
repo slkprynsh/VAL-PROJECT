@@ -14,10 +14,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'VAM VALTRIX – Advance Material Pvt. Ltd',
+  title: 'Valtrix Valtrix Advance Material Pvt. Ltd',
   description: 'Leading manufacturer of advanced materials for industrial applications. Metals, composites, polymers, and specialty coatings.',
   openGraph: {
-    title: 'VAM VALTRIX – Advance Material Pvt. Ltd',
+    title: 'Valtrix Valtrix Advance Material Pvt. Ltd',
     description: 'Leading manufacturer of advanced materials for industrial applications.',
     url: 'https://vamvaltrix.com',
   },
@@ -34,19 +34,22 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'VAM VALTRIX – Advance Material Pvt. Ltd',
+  name: 'Valtrix Valtrix Advance Material Pvt. Ltd',
   url: 'https://vamvaltrix.com',
   logo: 'https://vamvaltrix.com/valtrix-logo.png',
   contactPoint: {
     '@type': 'ContactPoint',
-    telephone: '+91 22 4976 8900',
+    telephone: '+91 98981 23983',
     contactType: 'customer service',
     areaServed: 'IN',
     availableLanguage: ['en', 'hi'],
   },
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Advance Material Pvt. Ltd',
+    streetAddress: '318, Fortune Gateway, Chhani',
+    addressLocality: 'Vadodara',
+    postalCode: '390024',
+    addressRegion: 'Gujarat',
     addressCountry: 'India',
   },
 };

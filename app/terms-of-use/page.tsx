@@ -32,7 +32,7 @@ export default function TermsOfUsePage() {
               <section className="bg-[#F8FAFB] p-6 rounded-xl border border-gray-100">
                 <h2 className="text-xl font-bold text-[#2C3E50] mb-3">Acceptance of Terms</h2>
                 <p>
-                  By accessing and using the website of VAM VALTRIX (Advance Material Pvt. Ltd, "we", "us", "our"), you accept and agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use our website.
+                  By accessing and using the website of VAM VALTRIX (Valtrix Advance Material Pvt. Ltd, "we", "us", "our"), you accept and agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use our website.
                 </p>
               </section>
             </Reveal>

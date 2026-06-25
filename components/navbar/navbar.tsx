@@ -52,9 +52,9 @@ export function Navbar() {
         <div className="bg-[#2C3E50] text-white py-1.5 sm:py-2">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs sm:text-sm">
             <div className="flex items-center gap-3 sm:gap-6">
-              <a href="tel:+912249768900" className="flex items-center gap-1 sm:gap-1.5 hover:text-[#D1F2F7] transition-colors min-h-[44px]">
+              <a href="tel:+919898123983" className="flex items-center gap-1 sm:gap-1.5 hover:text-[#D1F2F7] transition-colors min-h-[44px]">
                 <Phone size={12} />
-                <span className="hidden xs:inline sm:inline">+91 22 4976 8900</span>
+                <span className="hidden xs:inline sm:inline">+91 98981 23983</span>
                 <span className="xs:hidden sm:hidden">Call Us</span>
               </a>
               <a href="mailto:info@vamvaltrix.com" className="hidden md:flex items-center gap-1.5 hover:text-[#D1F2F7] transition-colors">
@@ -62,7 +62,7 @@ export function Navbar() {
                 <span>info@vamvaltrix.com</span>
               </a>
             </div>
-            <span className="text-xs text-gray-300 hidden sm:block">ISO Certified &nbsp;|&nbsp; Advance Material Pvt. Ltd</span>
+            <span className="text-xs text-gray-300 hidden sm:block">ISO Certified &nbsp;|&nbsp; Valtrix Valtrix Advance Material Pvt. Ltd</span>
             <span className="text-xs text-gray-300 sm:hidden">ISO Certified</span>
           </div>
         </div>

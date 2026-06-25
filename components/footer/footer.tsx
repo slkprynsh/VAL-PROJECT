@@ -142,20 +142,20 @@ export function Footer() {
               <Image src="/valtrix-logo.png" alt="VAM VALTRIX" width={130} height={44} className="h-9 sm:h-10 w-auto brightness-0 invert" />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-5 max-w-xs">
-              Advance Material Pvt. Ltd — delivering precision-engineered materials to industries worldwide.
+              Valtrix Valtrix Advance Material Pvt. Ltd — 318, Fortune Gateway, Chhani, Vadodara - 390024.
             </p>
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center gap-2">
                 <Phone size={14} className="text-[#17A2B8] shrink-0" />
-                <a href="tel:+912249768900" className="hover:text-white transition-colors">+91 22 4976 8900</a>
+                <a href="tel:+919898123983" className="hover:text-white transition-colors">+91 98981 23983</a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={14} className="text-[#17A2B8] shrink-0" />
-                <a href="mailto:info@vamvaltrix.com" className="hover:text-white transition-colors break-all">info@vamvaltrix.com</a>
+                <a href="mailto:info@valtrixadvance.com" className="hover:text-white transition-colors break-all">info@valtrixadvance.com</a>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin size={14} className="text-[#17A2B8] shrink-0" />
-                <span>India</span>
+                <span>Vadodara, Gujarat, India</span>
               </div>
             </div>
           </div>
@@ -182,7 +182,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500 text-center sm:text-left">
-            &copy; {new Date().getFullYear()} VAM VALTRIX – Advance Material Pvt. Ltd. All rights reserved.
+            &copy; {new Date().getFullYear()} Valtrix Valtrix Advance Material Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex gap-3">
             {[

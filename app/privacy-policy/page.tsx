@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
               <section className="bg-[#F8FAFB] p-6 rounded-xl border border-gray-100">
                 <h2 className="text-xl font-bold text-[#2C3E50] mb-3">Overview</h2>
                 <p>
-                  VAM VALTRIX (Advance Material Pvt. Ltd, "we", "us", "our") is committed to protecting the privacy and security of your personal data. This Privacy Policy explains how we collect, use, store, and process your personal information when you use our website, request quotes, or contact us.
+                  VAM VALTRIX (Valtrix Advance Material Pvt. Ltd, "we", "us", "our") is committed to protecting the privacy and security of your personal data. This Privacy Policy explains how we collect, use, store, and process your personal information when you use our website, request quotes, or contact us.
                 </p>
                 <p className="mt-2">
                   This policy is designed to comply with global privacy standards, including the **General Data Protection Regulation (GDPR)** for individuals in the European Economic Area (EEA), and the **Digital Personal Data Protection Act, 2023 (DPDPA 2023)** of India.
@@ -121,7 +121,7 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <div className="mt-4 text-sm space-y-1 text-gray-700">
                   <p><strong>Email:</strong> privacy@vamvaltrix.com</p>
-                  <p><strong>Address:</strong> Advance Material Pvt. Ltd, India</p>
+                  <p><strong>Address:</strong> 318, Fortune Gateway, Chhani, Vadodara - 390024, Gujarat, India</p>
                   <p><strong>Response Time:</strong> We aim to respond to all valid requests within 30 days.</p>
                 </div>
               </section>
